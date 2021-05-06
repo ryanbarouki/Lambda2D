@@ -1,0 +1,13 @@
+.vscode/
+cmake_modules/
+build/
+.vs/
+Debug/
+x64/
+*.out
+*.exe
+*.pdb
+*.obj
+*.sln
+*.vcxproj
+*.vcxproj.*
