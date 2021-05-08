@@ -7,8 +7,8 @@ int main()
     sf::Clock Clock;
     sf::CircleShape shape(70.f);
     shape.setFillColor(sf::Color::Green);
-    double vel = 0;
-    double g = 1000; // pixels / sec^2
+    float vel = 0.f;
+    float g = 1000.f; // pixels / sec^2
     while (window.isOpen())
     {
         sf::Time dt = Clock.restart();
@@ -27,7 +27,7 @@ int main()
         {
             vel += g * dt.asSeconds();
         }
-        shape.move(0.0f, vel * dt.asSeconds());
+        shape.move(0.02f, vel * dt.asSeconds());
         window.clear();
         window.draw(shape);
         window.display();
