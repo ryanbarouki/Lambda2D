@@ -3,12 +3,15 @@
 
 int main() 
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "SoftBody");
+    sf::Clock Clock;
+    sf::CircleShape shape(70.f);
     shape.setFillColor(sf::Color::Green);
-
+    double vel = 0;
+    double g = 1000; // pixels / sec^2
     while (window.isOpen())
     {
+        sf::Time dt = Clock.restart();
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -16,6 +19,15 @@ int main()
                 window.close();
         }
 
+        if (shape.getPosition().y > 700)
+        {
+            vel = -vel;
+        }
+        else
+        {
+            vel += g * dt.asSeconds();
+        }
+        shape.move(0.0f, vel * dt.asSeconds());
         window.clear();
         window.draw(shape);
         window.display();
