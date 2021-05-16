@@ -14,4 +14,5 @@ public:
     Box(float mass, float width, float height);
     float GetMass() { return Mass; }
     float GetMomentOfIntertia() { return MomentOfIntertia; }
+    AABB GetAABB() const override;
 };
