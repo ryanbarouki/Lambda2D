@@ -6,6 +6,8 @@
 #include "AABB.h"
 
 constexpr int nullNode = -1;
+constexpr float aabbFatFactor = 0.2f;
+constexpr float aabbMultiplier = 2.0f;
 using ColliderPairList = std::vector<std::pair<std::shared_ptr<IShape2>, std::shared_ptr<IShape2>>>;
 
 // This class is an adaptation of Erin Catto's b2DynamicTree from Box2d
@@ -30,7 +32,6 @@ private:
 
     // We store a large pool of TreeNodes and keep an index to the free list and root of the tree
     std::vector<TreeNode> Nodes;
-    ColliderPairList CollidingPairs;
     int Root;
     int FreeIndex;
     int NodeCapacity;
@@ -39,14 +40,12 @@ private:
     int AllocateNode();
     void DeallocateNode(int nodeIndex);
     void InsertLeaf(int leafNodeIndex);
-    void RemoveLeaf(int leafNodeIndex);
-    void UpdateLeaf(int leafNodeIndex, AABB const& newAABB);
     void FixTree(int nodeIndex);
 
 public:
     DynamicBVHTree();
-    void Update(std::shared_ptr<IShape2> const& object);
-    void Insert(std::shared_ptr<IShape2> const& object);
-    void Remove(std::shared_ptr<IShape2> const& object);
-    ColliderPairList& FindCollidingPairs();
+    void RemoveLeaf(int leafNodeIndex);
+    void UpdateLeaf(int leafNodeIndex, AABB const& newAABB, Vec2 const& displacement);
+    int Insert(std::shared_ptr<IShape2> const& object);
+    void Query(AABB const& aabb) const;
 };

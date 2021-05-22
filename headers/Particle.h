@@ -1,9 +1,9 @@
 #pragma once
-#include "Vector2.h"
+#include "Vec2.h"
 
 struct Particle
 {
-    Vector2 Position;
-    Vector2 Velocity;
+    Vec2 Position;
+    Vec2 Velocity;
     float Mass;
 };

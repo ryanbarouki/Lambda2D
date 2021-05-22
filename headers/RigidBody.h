@@ -1,16 +1,16 @@
 #pragma once
-#include "Vector2.h"
+#include "Vec2.h"
 #include "IShape2.h"
 #include <memory>
 
 class RigidBody
 {
 private:
-    Vector2 Position;
-    Vector2 LinearVelocity;
+    Vec2 Position;
+    Vec2 LinearVelocity;
     float Angle;
     float AngularVelocity;
-    Vector2 Force;
+    Vec2 Force;
     float Torque;
     std::unique_ptr<IShape2> Shape;
 

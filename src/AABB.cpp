@@ -3,7 +3,7 @@
 
 AABB::AABB() : Perimeter(0) {}
 
-AABB::AABB(Vector2 const& min, Vector2 const& max) : Min(min), Max(max), Perimeter(0) {}
+AABB::AABB(Vec2 const& min, Vec2 const& max) : Min(min), Max(max), Perimeter(0) {}
 
 float AABB::CalculatePerimeter()
 {
@@ -37,6 +37,12 @@ bool AABB::Intersects(AABB const& other)
     return true;
 }
 
+bool AABB::Contains(AABB const& other)
+{
+    return Min.x < other.Min.x && Min.y < other.Min.y
+        && Max.x > other.Max.x && Max.y > other.Max.y;
+}
+
 AABB MergeAABB(AABB const& A, AABB const& B)
 {
     float minX = std::min(A.Min.x, B.Min.x);
@@ -44,5 +50,11 @@ AABB MergeAABB(AABB const& A, AABB const& B)
     float maxX = std::max(A.Max.x, B.Max.x);
     float maxY = std::max(A.Max.y, B.Max.y);
 
-    return AABB(Vector2{minX, minY}, Vector2{maxX, maxY});
+    return AABB(Vec2{minX, minY}, Vec2{maxX, maxY});
+}
+
+void AABB::Fatten(Vec2 const& fat)
+{
+    Min = Min - fat;
+    Max = Max + fat;
 }

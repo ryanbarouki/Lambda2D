@@ -1,15 +1,17 @@
 #pragma once
-#include "Vector2.h"
+#include "Vec2.h"
 
 struct AABB
 {
-    Vector2 Min;
-    Vector2 Max;
+    Vec2 Min;
+    Vec2 Max;
 
     AABB();
-    AABB(Vector2 const& min, Vector2 const& max);
+    AABB(Vec2 const& min, Vec2 const& max);
     float GetPerimeter();
-    bool Intersects(AABB const& B);
+    bool Intersects(AABB const& other);
+    bool Contains(AABB const& other);
+    void Fatten(Vec2 const& fat);
 
 private:
     float Perimeter;

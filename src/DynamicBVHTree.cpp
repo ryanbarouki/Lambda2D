@@ -181,42 +181,104 @@ void DynamicBVHTree::FixTree(int nodeIndex)
 	}
 }
 
-// void DynamicBVHTree::RemoveLeaf(int leafNodeIndex)
-// {
-// 	if (leafNodeIndex == Root)
-// 	{
-// 		Root = nullNode;
-// 		return;
-// 	}
+void DynamicBVHTree::RemoveLeaf(int leafNodeIndex)
+{
+	if (leafNodeIndex == Root)
+	{
+		Root = nullNode;
+		return;
+	}
 
-// 	TreeNode& node = Nodes[leafNodeIndex];
-// 	int parentNodeIndex = node.Parent;
-// 	// TODO FINISH THIS
-// }
+	TreeNode& leafNode = Nodes[leafNodeIndex];
+	int parentNodeIndex = leafNode.Parent;
+	TreeNode const& parentNode = Nodes[parentNodeIndex];
+	int grandParentIndex = parentNode.Parent;
+	int siblingIndex = parentNode.LeftChild == leafNodeIndex ? parentNode.RightChild : parentNode.LeftChild;
+	TreeNode& sibling = Nodes[siblingIndex];
 
-// void DynamicBVHTree::UpdateLeaf(int leafNodeIndex, AABB const& newAABB)
-// {
-// 	TreeNode& node = Nodes[leafNodeIndex];
+	if (grandParentIndex != nullNode)
+	{
+		// the parent is not the root
+		TreeNode& grandParent = Nodes[grandParentIndex];
+		if (grandParent.LeftChild == parentNodeIndex)
+		{
+			grandParent.LeftChild = siblingIndex;
+		}
+		else
+		{
+			grandParent.RightChild = siblingIndex;
+		}
+		sibling.Parent = grandParentIndex;
+		DeallocateNode(parentNodeIndex);
 
+		FixTree(grandParentIndex);
+	}
+	else
+	{
+		Root = siblingIndex;
+		sibling.Parent = nullNode;
+		DeallocateNode(parentNodeIndex);
+	}
 
-// }
+	leafNode.Parent = nullNode;	
+}
 
-// void DynamicBVHTree::Update(std::shared_ptr<IShape2> const& object)
-// {
+void DynamicBVHTree::UpdateLeaf(int leafNodeIndex, AABB const& newAABB, Vec2 const& displacement)
+{
+	TreeNode& node = Nodes[leafNodeIndex];
 
-// }
+	// if the current AABB contains the new AABB then do nothing
+	if (node.FatAABB.Contains(newAABB))
+		return;
 
-// void DynamicBVHTree::Insert(std::shared_ptr<IShape2> const& object)
-// {
+	AABB fatAABB = newAABB; 
+	fatAABB.Fatten(Vec2{aabbFatFactor, aabbFatFactor});
+	
+	// use the displacement of the object to update the AABB 
+	Vec2 d = aabbMultiplier * displacement;
 
-// }
+	if (d.x < 0.0f)
+	{
+		fatAABB.Min.x += d.x;
+	}
+	else
+	{
+		fatAABB.Max.x += d.x;
+	}
 
-// void DynamicBVHTree::Remove(std::shared_ptr<IShape2> const& object)
-// {
+	if (d.y < 0.0f)
+	{
+		fatAABB.Min.y += d.y;
+	}
+	else
+	{
+		fatAABB.Max.y += d.y;
+	}
 
-// }
+	RemoveLeaf(leafNodeIndex);
+	node.FatAABB = fatAABB;
+	InsertLeaf(leafNodeIndex);
+}
 
-// ColliderPairList& DynamicBVHTree::FindCollidingPairs()
-// {
+int DynamicBVHTree::Insert(std::shared_ptr<IShape2> const& object)
+{
+	int nodeIndex = AllocateNode();
+	TreeNode& node = Nodes[nodeIndex];
+	AABB aabb = object->GetAABB();
 
-// }
+	// fatten the object's AABB before adding to tree
+	Vec2 fat{aabbFatFactor, aabbFatFactor};
+	node.FatAABB.Fatten(fat);
+
+	node.Object = object;
+	node.Height = 0;
+
+	InsertLeaf(nodeIndex);
+	
+	return nodeIndex;
+}
+
+void DynamicBVHTree::Query(AABB const& aabb) const
+{
+	// NOT IMPLEMENTED
+}
