@@ -5,14 +5,14 @@ AABB::AABB() : Perimeter(0) {}
 
 AABB::AABB(Vec2 const& min, Vec2 const& max) : Min(min), Max(max), Perimeter(0) {}
 
-float AABB::CalculatePerimeter()
+float AABB::CalculatePerimeter() const
 {
     float width = Max.x - Min.x;
     float height = Max.y - Min.y;
     return 2*width + 2*height;
 }
 
-float AABB::GetPerimeter() 
+float AABB::GetPerimeter()
 {
     if (Perimeter == 0)
     {
@@ -21,7 +21,7 @@ float AABB::GetPerimeter()
     return Perimeter;
 }
 
-bool AABB::Intersects(AABB const& other)
+bool AABB::Intersects(AABB const& other) const
 {
     float d1x = other.Min.x - Max.x;
     float d1y = other.Min.y - Max.y;
@@ -37,7 +37,7 @@ bool AABB::Intersects(AABB const& other)
     return true;
 }
 
-bool AABB::Contains(AABB const& other)
+bool AABB::Contains(AABB const& other) const
 {
     return Min.x < other.Min.x && Min.y < other.Min.y
         && Max.x > other.Max.x && Max.y > other.Max.y;

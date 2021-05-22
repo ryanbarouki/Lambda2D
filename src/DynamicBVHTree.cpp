@@ -1,5 +1,6 @@
 #include "../headers/DynamicBVHTree.h"
 #include <cassert>
+#include <stack>
 
 DynamicBVHTree::DynamicBVHTree() : NodeCapacity(16), FreeIndex(0), AllocatedNodeCount(0), Root(nullNode)
 {
@@ -278,7 +279,36 @@ int DynamicBVHTree::Insert(std::shared_ptr<IShape2> const& object)
 	return nodeIndex;
 }
 
-void DynamicBVHTree::Query(AABB const& aabb) const
+std::vector<int> DynamicBVHTree::Query(std::shared_ptr<IShape2> const& object) const
 {
-	// NOT IMPLEMENTED
+	std::vector<int> overlaps;
+	std::stack<int> stack;
+	AABB objectAABB = object->GetAABB();
+
+	stack.push(Root);
+
+	while(!stack.empty())
+	{
+		int currNodeIndex = stack.top();
+		stack.pop();
+
+		if (currNodeIndex == nullNode) 
+			continue;
+
+		TreeNode const& currNode = Nodes[currNodeIndex];
+		if (currNode.FatAABB.Intersects(objectAABB))
+		{
+			if (currNode.IsLeaf() && currNode.Object != object)
+			{
+				overlaps.push_back(currNodeIndex);
+			}
+			else
+			{
+				stack.push(currNode.LeftChild);
+				stack.push(currNode.RightChild);
+			}
+		}
+	}
+
+	return overlaps;
 }

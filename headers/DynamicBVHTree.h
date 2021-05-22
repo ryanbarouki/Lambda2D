@@ -47,5 +47,5 @@ public:
     void RemoveLeaf(int leafNodeIndex);
     void UpdateLeaf(int leafNodeIndex, AABB const& newAABB, Vec2 const& displacement);
     int Insert(std::shared_ptr<IShape2> const& object);
-    void Query(AABB const& aabb) const;
+    std::vector<int> Query(std::shared_ptr<IShape2> const& object) const;
 };

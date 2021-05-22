@@ -9,13 +9,13 @@ struct AABB
     AABB();
     AABB(Vec2 const& min, Vec2 const& max);
     float GetPerimeter();
-    bool Intersects(AABB const& other);
-    bool Contains(AABB const& other);
+    bool Intersects(AABB const& other) const;
+    bool Contains(AABB const& other) const;
     void Fatten(Vec2 const& fat);
 
 private:
     float Perimeter;
-    float CalculatePerimeter();
+    float CalculatePerimeter() const;
 };
 
 AABB MergeAABB(AABB const& A, AABB const& B);
