@@ -4,6 +4,9 @@ struct Vec2
 {
     float x;
     float y;
+
+    float SquaredLength();
+    float Length();
 };
 
 Vec2 operator+(Vec2 const& U, Vec2 const& V);

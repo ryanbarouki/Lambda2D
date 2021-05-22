@@ -1,4 +1,4 @@
 # 2D Soft/Rigid Body Physics
 ## TODO
-- Start with Rigid bodies
-    - bounding volume hierarchy tree: MVP without balancing
+- Narrow Phase: Separating Axis Theorem for polygon-polygon and polygon-circle
+    - Find the collision point to be resolved later

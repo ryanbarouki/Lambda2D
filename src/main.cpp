@@ -21,7 +21,8 @@ int main()
 
         if (shape.getPosition().y > 700)
         {
-            vel = -vel;
+            shape.move(0.f, 700 - shape.getPosition().y); // this pushes the shape back so it's just touching the wall
+            vel = -0.7*vel;
         }
         else
         {
