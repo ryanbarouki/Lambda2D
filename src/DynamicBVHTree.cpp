@@ -279,11 +279,11 @@ int DynamicBVHTree::Insert(std::shared_ptr<IShape2> const& object)
 	return nodeIndex;
 }
 
-std::vector<int> DynamicBVHTree::Query(std::shared_ptr<IShape2> const& object) const
+std::vector<int> DynamicBVHTree::Query(int queryIndex) const
 {
 	std::vector<int> overlaps;
 	std::stack<int> stack;
-	AABB objectAABB = object->GetAABB();
+	AABB objectAABB = Nodes[queryIndex].Object->GetAABB();
 
 	stack.push(Root);
 
@@ -298,9 +298,14 @@ std::vector<int> DynamicBVHTree::Query(std::shared_ptr<IShape2> const& object) c
 		TreeNode const& currNode = Nodes[currNodeIndex];
 		if (currNode.FatAABB.Intersects(objectAABB))
 		{
-			if (currNode.IsLeaf() && currNode.Object != object)
+			// is a leaf and is not the object we're querying with
+			if (currNode.IsLeaf() && currNodeIndex != queryIndex)
 			{
-				overlaps.push_back(currNodeIndex);
+				// choose an arbitrary inequality to avoid duplicate pairs
+				if (queryIndex < currNodeIndex)
+				{
+					overlaps.push_back(currNodeIndex);
+				}
 			}
 			else
 			{
