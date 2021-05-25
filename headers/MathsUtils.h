@@ -14,10 +14,10 @@ struct Vec2
     float x;
     float y;
 
-    float SquaredLength();
-    float Length();
-    Vec2 Perp();
-    Vec2 Normalised();
+    float SquaredLength() const;
+    float Length() const;
+    Vec2 Perp() const;
+    Vec2 Normalised() const;
 };
 
 // vector operations

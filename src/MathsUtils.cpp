@@ -1,4 +1,4 @@
-#include "../headers/Vec2.h"
+#include "../headers/MathsUtils.h"
 #include <cmath>
 #include <cassert>
 
@@ -39,12 +39,12 @@ Vec2 operator*(float scalar, Vec2 const& U)
     return Vec2{scalar * U.x, scalar * U.y};
 }
 
-float Vec2::SquaredLength()
+float Vec2::SquaredLength() const
 {
     return x*x + y*y;
 }
 
-float Vec2::Length()
+float Vec2::Length() const
 {
     return sqrt(x*x + y*y);
 }
@@ -54,12 +54,12 @@ float Dot(Vec2 const& U, Vec2 const& V)
     return U.x * V.x + U.y * V.y;
 }
 
-Vec2 Vec2::Perp()
+Vec2 Vec2::Perp() const
 {
     return Vec2{-y, x};
 }
 
-Vec2 Vec2::Normalised()
+Vec2 Vec2::Normalised() const
 {
     float length = Length();
     return Vec2{x / length, y / length};

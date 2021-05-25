@@ -1,6 +1,6 @@
 #pragma once
 #include "IShape2.h"
-#include "Vec2.h"
+#include "MathsUtils.h"
 #include <vector>
 #include <optional>
 
@@ -17,8 +17,4 @@ public:
     Interval Project(Vec2 const& axis) const;
     AABB GetAABB() const override;
 
-    // Narrow phase collision detection for polygons - Separating Axis Theorem
-    // returns the minimum translation vector
-    // containment is not handled yet
-    friend std::optional<Vec2> PolygonsCollide(Polygon const& poly1, Polygon const& poly2);
 };
