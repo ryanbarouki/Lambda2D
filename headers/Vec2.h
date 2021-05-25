@@ -6,6 +6,7 @@ struct Interval
     float Max;
 
     bool Overlap(Interval const& I) const;
+    float GetOverlap(Interval const& I) const; 
 };
 
 struct Vec2 
@@ -16,7 +17,7 @@ struct Vec2
     float SquaredLength();
     float Length();
     Vec2 Perp();
-    Vec2 Normalise();
+    Vec2 Normalised();
 };
 
 // vector operations

@@ -2,6 +2,7 @@
 #include "IShape2.h"
 #include "Vec2.h"
 #include <vector>
+#include <optional>
 
 // only convex polygons
 class Polygon : public IShape2 
@@ -17,5 +18,7 @@ public:
     AABB GetAABB() const override;
 
     // Narrow phase collision detection for polygons - Separating Axis Theorem
-    friend bool PolygonsCollide(Polygon const& poly1, Polygon const& poly2);
+    // returns the minimum translation vector
+    // containment is not handled yet
+    friend std::optional<Vec2> PolygonsCollide(Polygon const& poly1, Polygon const& poly2);
 };

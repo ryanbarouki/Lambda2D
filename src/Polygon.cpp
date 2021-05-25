@@ -1,4 +1,5 @@
 #include "../headers/Polygon.h"
+#include <limits>
 
 std::vector<Vec2> Polygon::GetAxes() const
 {
@@ -11,7 +12,7 @@ std::vector<Vec2> Polygon::GetAxes() const
         Vec2 edge = v1 - v2; // the edge vector
         Vec2 axis = edge.Perp(); // perpendicular vector
 
-        axes.push_back(axis.Normalise());
+        axes.push_back(axis.Normalised());
     }
 }
 
@@ -36,8 +37,10 @@ Interval Polygon::Project(Vec2 const& normedAxis) const
     return Interval{min, max};
 }
 
-bool PolygonsCollide(Polygon const& poly1, Polygon const& poly2)
+std::optional<Vec2> PolygonsCollide(Polygon const& poly1, Polygon const& poly2)
 {
+    float minOverlap = std::numeric_limits<float>::max(); // v large number
+    Vec2 mtvDirection;
     auto axes1 = poly1.GetAxes();
     auto axes2 = poly2.GetAxes();
 
@@ -50,8 +53,18 @@ bool PolygonsCollide(Polygon const& poly1, Polygon const& poly2)
        if (!p1.Overlap(p2))
        {
            // if even one axis doesn't overlap then the shapes don't overlap
-           return false;
+           return std::nullopt;
        } 
+       else
+       {
+           float overlap = p1.GetOverlap(p2);
+
+           if (overlap < minOverlap)
+           {
+               minOverlap = overlap;
+               mtvDirection = axis;
+           }
+       }
     }
 
     // loop over axes 2
@@ -63,8 +76,20 @@ bool PolygonsCollide(Polygon const& poly1, Polygon const& poly2)
        if (!p1.Overlap(p2))
        {
            // if even one axis doesn't overlap then the shapes don't overlap
-           return false;
+           return std::nullopt;
        } 
+       else
+       {
+           float overlap = p1.GetOverlap(p2);
+
+           if (overlap < minOverlap)
+           {
+               minOverlap = overlap;
+               mtvDirection = axis;
+           }
+       }
     }
-    return true;
+
+    Vec2 mtv = minOverlap * mtvDirection.Normalised();
+    return mtv;
 }

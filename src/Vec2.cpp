@@ -1,5 +1,6 @@
 #include "../headers/Vec2.h"
 #include <cmath>
+#include <cassert>
 
 
 bool Interval::Overlap(Interval const& I) const
@@ -11,6 +12,16 @@ bool Interval::Overlap(Interval const& I) const
         return false;
 
     return true;
+}
+
+float Interval::GetOverlap(Interval const& I) const
+{
+    assert(Overlap(I));
+
+    float minMax = std::min(Max, I.Max);
+    float maxMin = std::max(Min, I.Min);
+
+    return minMax - maxMin;
 }
 
 Vec2 operator+(Vec2 const& U, Vec2 const& V)
@@ -48,7 +59,7 @@ Vec2 Vec2::Perp()
     return Vec2{-y, x};
 }
 
-Vec2 Vec2::Normalise()
+Vec2 Vec2::Normalised()
 {
     float length = Length();
     return Vec2{x / length, y / length};
