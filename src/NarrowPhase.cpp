@@ -64,3 +64,13 @@ bool NarrowPhase::CirclesCollide(Circle const& A, Circle const& B)
     float sumRadii = A.GetRadius() + B.GetRadius();
     return distanceCentresSq <= sumRadii*sumRadii;
 }
+
+// returns the contact manifold (list of contact points)
+std::vector<Vec2> FindContactPoints(Polygon const& poly1, Polygon const& poly2, Vec2 const& normal)
+{
+    EdgePair e1 = poly1.FindBestEdge(normal);
+    EdgePair e2 = poly2.FindBestEdge(-normal);
+
+    // clipping
+    return {};
+}

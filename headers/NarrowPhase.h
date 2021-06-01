@@ -22,4 +22,6 @@ public:
     
     // more methods to do with clipping after returning the MTV
     // see https://dyn4j.org/2011/11/contact-points-using-clipping/
+    std::vector<Vec2> FindContactPoints(Polygon const& poly1, Polygon const& poly2);
+
 };

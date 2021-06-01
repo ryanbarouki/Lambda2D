@@ -34,6 +34,11 @@ Vec2 operator-(Vec2 const& U, Vec2 const& V)
     return Vec2{U.x - V.x, U.y - V.y};
 }
 
+Vec2 operator-(Vec2 const& U)
+{
+    return Vec2{-U.x, -U.y};
+}
+
 Vec2 operator*(float scalar, Vec2 const& U)
 {
     return Vec2{scalar * U.x, scalar * U.y};
@@ -49,9 +54,9 @@ float Vec2::Length() const
     return sqrt(x*x + y*y);
 }
 
-float Dot(Vec2 const& U, Vec2 const& V)
+float Vec2::Dot(Vec2 const& U) const
 {
-    return U.x * V.x + U.y * V.y;
+    return x * U.x + y * U.y;
 }
 
 Vec2 Vec2::Perp() const

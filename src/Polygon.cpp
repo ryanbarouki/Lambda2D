@@ -18,12 +18,12 @@ std::vector<Vec2> Polygon::GetAxes() const
 
 Interval Polygon::Project(Vec2 const& normedAxis) const
 {
-    float min = Dot(normedAxis, Vertices[0]);
+    float min = normedAxis.Dot(Vertices[0]);
     float max = min;
 
     for (int i = 0; i < Vertices.size(); ++i)
     {
-        float p = Dot(normedAxis, Vertices[i]);
+        float p = normedAxis.Dot(Vertices[i]);
         if (p < min)
         {
             min = p;
@@ -35,4 +35,38 @@ Interval Polygon::Project(Vec2 const& normedAxis) const
     }
 
     return Interval{min, max};
+}
+
+
+EdgePair Polygon::FindBestEdge(Vec2 const& normal) const
+{
+    float max = std::numeric_limits<float>::min();
+    auto furthestV = Vertices.begin();
+    // find the farthest vertex in the polygon along the separation normal
+    for (auto it = Vertices.begin(); it != Vertices.end(); ++it)
+    {
+        float projection = normal.Dot(*it);
+        if (projection > max)
+        {
+            max = projection;
+            furthestV = it;
+        }
+    }
+
+    Vec2 v = *furthestV;
+    Vec2 v0 = *(--furthestV); // previous vertex
+    Vec2 v1 = *(++furthestV); // next vertex
+
+    Vec2 l = (v - v1).Normalised();
+    Vec2 r = (v - v0).Normalised();
+
+    // retain the winding direction of the vertices v0 -> v -> v1
+    if (r.Dot(normal) <= l.Dot(normal))
+    {
+        return EdgePair{v0, v};
+    }
+    else 
+    {
+        return EdgePair{v, v1};
+    }
 }

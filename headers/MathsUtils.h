@@ -18,10 +18,18 @@ struct Vec2
     float Length() const;
     Vec2 Perp() const;
     Vec2 Normalised() const;
+    float Dot(Vec2 const& U) const;
+};
+
+struct EdgePair
+{
+    // pair of vertices
+    Vec2 v1;
+    Vec2 v2;
 };
 
 // vector operations
 Vec2 operator+(Vec2 const& U, Vec2 const& V);
 Vec2 operator-(Vec2 const& U, Vec2 const& V);
+Vec2 operator-(Vec2 const& U);
 Vec2 operator*(float scalar, Vec2 const& U);
-float Dot(Vec2 const& U, Vec2 const& V);

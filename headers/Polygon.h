@@ -16,5 +16,5 @@ public:
     std::vector<Vec2> GetAxes() const;
     Interval Project(Vec2 const& axis) const;
     AABB GetAABB() const override;
-
+    EdgePair FindBestEdge(Vec2 const& normal) const;
 };
