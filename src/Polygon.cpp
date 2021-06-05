@@ -63,10 +63,10 @@ EdgePair Polygon::FindBestEdge(Vec2 const& normal) const
     // retain the winding direction of the vertices v0 -> v -> v1
     if (r.Dot(normal) <= l.Dot(normal))
     {
-        return EdgePair{v0, v};
+        return EdgePair{v0, v, v};
     }
     else 
     {
-        return EdgePair{v, v1};
+        return EdgePair{v, v1, v};
     }
 }

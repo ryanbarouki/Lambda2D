@@ -65,12 +65,81 @@ bool NarrowPhase::CirclesCollide(Circle const& A, Circle const& B)
     return distanceCentresSq <= sumRadii*sumRadii;
 }
 
+std::vector<Vec2> NarrowPhase::Clip(Vec2 const& v1, Vec2 const& v2, Vec2 const& normal, float offset)
+{
+    std::vector<Vec2> cp;
+    float d1 = normal.Dot(v1) - offset;
+    float d2 = normal.Dot(v2) - offset;
+    
+    if (d1 >= 0.0f)
+    {
+        cp.push_back(v1);
+    }
+    if (d2 >= 0.0f)
+    {
+        cp.push_back(v2);
+    }
+
+    if (d1*d2 < 0.0f)
+    {
+        Vec2 e = v2 - v1;
+        float u = d1 / (d1 - d2);
+
+        e = u * e;
+        e = e + v1;
+        cp.push_back(e);
+    }
+    return cp;
+}
+
 // returns the contact manifold (list of contact points)
-std::vector<Vec2> FindContactPoints(Polygon const& poly1, Polygon const& poly2, Vec2 const& normal)
+std::vector<Vec2> NarrowPhase::FindContactPoints(Polygon const& poly1, Polygon const& poly2, Vec2 const& normal)
 {
     EdgePair e1 = poly1.FindBestEdge(normal);
     EdgePair e2 = poly2.FindBestEdge(-normal);
 
-    // clipping
-    return {};
+    // find reference and incident edges
+    EdgePair ref, inc;
+    bool flip = false;
+    if (abs(e1.GetEdgeVec().Dot(normal)) <= abs(e2.GetEdgeVec().Dot(normal)))
+    {
+        ref = e1;
+        inc = e2;
+    }
+    else
+    {
+        ref = e2;
+        ref = e1;
+
+        flip = true;
+    }
+
+    Vec2 refvDir = ref.GetEdgeVec().Normalised();
+    float offset1 = refvDir.Dot(ref.v1);
+    auto cp = Clip(inc.v1, inc.v2, refvDir, offset1);
+
+    if (cp.size() < 2) return {};
+
+    float offset2 = refvDir.Dot(ref.v2);
+    cp = Clip(cp[0], cp[1], -refvDir, -offset2);
+
+    if (cp.size() < 2) return {};
+
+    Vec2 refNorm = ref.GetEdgeVec().Perp();
+    if (flip) refNorm = -refNorm;
+
+    float max = refNorm.Dot(ref.max);
+
+    // make sure the final points are not past the max
+    if (refNorm.Dot(cp[0]) - max < 0.0f)
+    {
+        cp.erase(cp.begin());
+    }
+    if (refNorm.Dot(cp[1]) - max < 0.0f)
+    {
+        cp.erase(cp.begin()++);
+    }
+
+    return cp;
 }
+

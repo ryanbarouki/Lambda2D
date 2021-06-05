@@ -26,6 +26,9 @@ struct EdgePair
     // pair of vertices
     Vec2 v1;
     Vec2 v2;
+    Vec2 max;
+
+    Vec2 GetEdgeVec();
 };
 
 // vector operations

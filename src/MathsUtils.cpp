@@ -69,3 +69,9 @@ Vec2 Vec2::Normalised() const
     float length = Length();
     return Vec2{x / length, y / length};
 }
+
+// points from v1 to v2;
+Vec2 EdgePair::GetEdgeVec()
+{
+    return v2 - v1;
+}
