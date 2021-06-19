@@ -1,5 +1,19 @@
 #include "../headers/Arbiter.h"
 
+ArbiterKey::ArbiterKey(std::shared_ptr<RigidBody> const& body1, std::shared_ptr<RigidBody> const& body2)
+{
+    if (body1 < body2)
+    {
+        Body1 = body1;
+        Body2 = body2;
+    }
+    else
+    {
+        Body1 = body2;
+        Body2 = body1;
+    }
+}
+
 Arbiter::Arbiter(std::shared_ptr<RigidBody> const& body1, std::shared_ptr<RigidBody> const& body2)
 : Body1(body1), Body2(body2)
 {
