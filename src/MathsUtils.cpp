@@ -44,6 +44,16 @@ Vec2 operator*(float scalar, Vec2 const& U)
     return Vec2{scalar * U.x, scalar * U.y};
 }
 
+void operator+=(Vec2& U, Vec2 const& V)
+{
+    U = U + V;
+}
+
+void operator-=(Vec2& U, Vec2 const& V)
+{
+    U = U - V;
+}
+
 float Vec2::SquaredLength() const
 {
     return x*x + y*y;
