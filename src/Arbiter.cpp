@@ -19,7 +19,7 @@ Arbiter::Arbiter(std::shared_ptr<RigidBody> const& body1, std::shared_ptr<RigidB
 {
 }
 
-void Arbiter::PreStep(float invDt)
+void Arbiter::PreStep(float invDt) 
 {
     for (auto& c : ContactManifold)
     {
@@ -50,10 +50,8 @@ void Arbiter::PreStep(float invDt)
     }
 }
 
-void Arbiter::ApplyImpulse(float invDt)
+void Arbiter::ApplyImpulse() const
 {
-    PreStep(invDt);
-
     for (auto& c : ContactManifold)
     {
         Vec2 r1 = c.point - Body1->Position;
