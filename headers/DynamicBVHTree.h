@@ -8,7 +8,6 @@
 constexpr int nullNode = -1;
 constexpr float aabbFatFactor = 0.2f;
 constexpr float aabbMultiplier = 2.0f;
-using ColliderPairList = std::vector<std::pair<std::shared_ptr<IShape2>, std::shared_ptr<IShape2>>>;
 
 // This class is an adaptation of Erin Catto's b2DynamicTree from Box2d
 class DynamicBVHTree

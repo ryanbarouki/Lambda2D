@@ -1,4 +1,4 @@
-# 2D Soft/Rigid Body Physics
+# 2D Rigid Body Physics (Possibly Soft Body in the future)
 ## TODO
-- World step function putting it all together
+- Implement the Broad Phase using the BVH tree
 - Draw a basic example

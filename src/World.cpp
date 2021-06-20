@@ -10,6 +10,7 @@ void World::Step(float dt)
     float invDt = dt > 0.0f ? 1.0f / dt : 0.0f;
 
     // Do the broadphase here
+    BroadPhase();
 
     // Integrate forces - do we need this at first?
     for (auto& body : Bodies)
@@ -46,4 +47,9 @@ void World::Step(float dt)
         body->Force = {0.0f,0.0f};
         body->Torque = 0.0f;
     }
+}
+
+void World::BroadPhase()
+{
+    // TODO: Implement this
 }

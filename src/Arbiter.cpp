@@ -1,4 +1,6 @@
 #include "../headers/Arbiter.h"
+#include "../headers/NarrowPhase.h"
+#include <cmath>
 
 ArbiterKey::ArbiterKey(std::shared_ptr<RigidBody> const& body1, std::shared_ptr<RigidBody> const& body2)
 {
@@ -17,6 +19,20 @@ ArbiterKey::ArbiterKey(std::shared_ptr<RigidBody> const& body1, std::shared_ptr<
 Arbiter::Arbiter(std::shared_ptr<RigidBody> const& body1, std::shared_ptr<RigidBody> const& body2)
 : Body1(body1), Body2(body2)
 {
+    if (body1 < body2)
+    {
+        Body1 = body1;
+        Body2 = body2;
+    }
+    else
+    {
+        Body1 = body2;
+        Body2 = body1;
+    }
+    
+    // THIS IS BAD AND SHOULD BE FIXED ASAP
+    ContactManifold = NarrowPhase::FindContactPoints(dynamic_cast<Polygon const&>(*Body1->Shape), dynamic_cast<Polygon const&>(*Body2->Shape));
+    Friction = sqrtf(Body1->Friction * Body2->Friction);
 }
 
 void Arbiter::PreStep(float invDt) 

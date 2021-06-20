@@ -93,8 +93,15 @@ std::vector<Vec2> NarrowPhase::Clip(Vec2 const& v1, Vec2 const& v2, Vec2 const& 
 }
 
 // returns the contact manifold (list of contact points)
-std::vector<ContactPoint> NarrowPhase::FindContactPoints(Polygon const& poly1, Polygon const& poly2, Vec2 const& normal)
+std::vector<ContactPoint> NarrowPhase::FindContactPoints(Polygon const& poly1, Polygon const& poly2)
 {
+    auto pNormal = PolygonsCollide(poly1, poly2);
+    if (!pNormal)
+    {
+        return {};
+    }
+
+    Vec2 normal = *pNormal;
     EdgePair e1 = poly1.FindBestEdge(normal);
     EdgePair e2 = poly2.FindBestEdge(-normal);
 
