@@ -2,7 +2,6 @@
 #include <cmath>
 #include <cassert>
 
-
 bool Interval::Overlap(Interval const& I) const
 {
     float d1 = Min - I.Max;     

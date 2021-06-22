@@ -261,11 +261,11 @@ void DynamicBVHTree::UpdateLeaf(int leafNodeIndex, AABB const& newAABB, Vec2 con
 	InsertLeaf(leafNodeIndex);
 }
 
-int DynamicBVHTree::Insert(std::shared_ptr<IShape2> const& object)
+int DynamicBVHTree::Insert(std::shared_ptr<RigidBody> const& object)
 {
 	int nodeIndex = AllocateNode();
 	TreeNode& node = Nodes[nodeIndex];
-	AABB aabb = object->GetAABB();
+	AABB aabb = object->Shape->GetAABB();
 
 	// fatten the object's AABB before adding to tree
 	Vec2 fat{aabbFatFactor, aabbFatFactor};
@@ -283,7 +283,7 @@ std::vector<int> DynamicBVHTree::Query(int queryIndex) const
 {
 	std::vector<int> overlaps;
 	std::stack<int> stack;
-	AABB objectAABB = Nodes[queryIndex].Object->GetAABB();
+	AABB objectAABB = Nodes[queryIndex].Object->Shape->GetAABB();
 
 	stack.push(Root);
 
@@ -316,4 +316,15 @@ std::vector<int> DynamicBVHTree::Query(int queryIndex) const
 	}
 
 	return overlaps;
+}
+
+const AABB& DynamicBVHTree::GetFatAABB(int queryId) const
+{
+	return Nodes[queryId].FatAABB;
+}
+
+
+DynamicBVHTree::TreeNode const& DynamicBVHTree::GetNode(int id) const
+{
+	return Nodes[id];
 }

@@ -7,6 +7,7 @@ class RigidBody
 {
 public:
     RigidBody() = default;
+    RigidBody(std::unique_ptr<IShape2> shape) : Shape(std::move(shape)) {}
     // add more constructors and methods 
 
     Vec2 Position;

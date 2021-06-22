@@ -116,3 +116,8 @@ void Arbiter::ApplyImpulse() const
     }
 
 }
+
+bool Arbiter::InContact() const
+{
+    return !ContactManifold.empty();
+}

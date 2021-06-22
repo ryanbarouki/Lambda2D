@@ -3,6 +3,7 @@
 #include <variant>
 #include <memory>
 #include "IShape2.h"
+#include "RigidBody.h"
 #include "AABB.h"
 
 constexpr int nullNode = -1;
@@ -16,7 +17,7 @@ private:
     struct TreeNode
     {
         AABB FatAABB;
-        std::shared_ptr<IShape2> Object; // a ptr to the actual object e.g. a Box, Circle etc.
+        std::shared_ptr<RigidBody> Object; // a ptr to the actual object e.g. a Box, Circle etc.
         int Next;
         int Parent;
         int RightChild;
@@ -43,8 +44,10 @@ private:
 
 public:
     DynamicBVHTree();
+    TreeNode const& GetNode(int id) const;
+    const AABB& GetFatAABB(int queryId) const; 
     void RemoveLeaf(int leafNodeIndex);
     void UpdateLeaf(int leafNodeIndex, AABB const& newAABB, Vec2 const& displacement);
-    int Insert(std::shared_ptr<IShape2> const& object);
+    int Insert(std::shared_ptr<RigidBody> const& object);
     std::vector<int> Query(int leafNodeIndex) const;
 };

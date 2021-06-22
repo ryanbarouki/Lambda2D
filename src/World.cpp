@@ -52,4 +52,43 @@ void World::Step(float dt)
 void World::BroadPhase()
 {
     // TODO: Implement this
+    for (auto const& body : Bodies)
+    {
+        int bodyIndex = BodyIndices[body];
+        if (bodyIndex == nullNode)
+        {
+            continue;
+        }
+
+        auto const& fatAABB = CollisionTree.GetFatAABB(bodyIndex);
+
+        auto overlaps = CollisionTree.Query(bodyIndex); // can this be done more efficiently?
+
+        for (auto const& overlap : overlaps)
+        {
+            auto overlapBody = CollisionTree.GetNode(bodyIndex).Object;
+            Arbiter newArb(body, overlapBody);
+            ArbiterKey arbKey(body, overlapBody);
+            
+            if (newArb.InContact())
+            {
+                auto it = Arbiters.find(arbKey);
+                if (it == Arbiters.end())
+                {
+                    Arbiters.insert(std::make_pair(arbKey, newArb));
+                }
+                else
+                {
+                    // update existing Arbiter pair
+                    // for now just do the same
+                    Arbiters.insert(std::make_pair(arbKey, newArb));
+                }
+            }
+            else
+            {
+                // not in contact so remove from Arbiters
+                Arbiters.erase(arbKey);
+            }
+        }
+    }
 }

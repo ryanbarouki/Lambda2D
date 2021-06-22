@@ -1,4 +1,6 @@
 #pragma once
+#include <algorithm>
+#include <math.h>
 
 struct Interval
 {
@@ -19,6 +21,43 @@ struct Vec2
     Vec2 Perp() const;
     Vec2 Normalised() const;
     float Dot(Vec2 const& U) const;
+};
+
+struct Mat22
+{
+	Mat22() {}
+	Mat22(float angle)
+	{
+		float c = cosf(angle), s = sinf(angle);
+		col1.x = c; col2.x = -s;
+		col1.y = s; col2.y = c;
+	}
+
+	Mat22(const Vec2& col1, const Vec2& col2) : col1(col1), col2(col2) {}
+
+	Mat22 Transpose() const
+	{
+		return Mat22({col1.x, col2.x}, {col1.y, col2.y});
+	}
+
+	Mat22 Invert() const
+	{
+		float a = col1.x, b = col2.x, c = col1.y, d = col2.y;
+		Mat22 B;
+		float det = a * d - b * c;
+
+        if (det != 0)
+        {
+            det = 1.0f / det;
+        }
+
+		B.col1.x =  det * d;	B.col2.x = -det * b;
+		B.col1.y = -det * c;	B.col2.y =  det * a;
+		return B;
+	}
+
+	Vec2 col1;
+    Vec2 col2;
 };
 
 struct EdgePair
@@ -67,4 +106,9 @@ inline Vec2 Cross(float s, Vec2 const& a)
 inline float Clamp(float a, float low, float high)
 {
 	return std::max(low, std::min(a, high));
+}
+
+inline Vec2 operator*(Mat22 const& R, Vec2 const& U)
+{
+    return {R.col1.x * U.x + R.col2.x * U.y, R.col1.y * U.x + R.col2.y * U.y};
 }

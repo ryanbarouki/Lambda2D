@@ -1,6 +1,22 @@
 #include "../headers/Polygon.h"
 #include <limits>
 
+Polygon::Polygon(std::vector<Vec2> const& vertices) : Vertices(vertices)
+{
+}
+
+void Polygon::SetSquare(Vec2 const& pos, float width)
+{
+    // is this the correct winding?
+    Vec2 h = {width, width};
+    Vec2 v1 = pos;
+    Vec2 v2 = {pos.x + width, pos.y};
+    Vec2 v3 = pos + h;
+    Vec2 v4 = {pos.x, pos.y + width};
+
+    Vertices = {v1, v2, v3, v4};
+}
+
 std::vector<Vec2> Polygon::GetAxes() const
 {
     std::vector<Vec2> axes;
@@ -14,6 +30,16 @@ std::vector<Vec2> Polygon::GetAxes() const
 
         axes.push_back(axis.Normalised());
     }
+}
+
+std::vector<Vec2> Polygon::GetVertices() const
+{
+    return Vertices;
+}
+
+void Polygon::SetVertices(std::vector<Vec2> newVertices)
+{
+    Vertices = newVertices;
 }
 
 Interval Polygon::Project(Vec2 const& normedAxis) const
@@ -69,4 +95,25 @@ EdgePair Polygon::FindBestEdge(Vec2 const& normal) const
     {
         return EdgePair{v, v1, v};
     }
+}
+
+AABB Polygon::GetAABB() const
+{
+    float x_min = std::numeric_limits<float>::max();
+    float y_min = std::numeric_limits<float>::max();
+    float x_max = std::numeric_limits<float>::min();
+    float y_max = std::numeric_limits<float>::min();
+    for (auto const& v : Vertices)
+    {
+        if (v.x < x_min)
+            x_min = v.x;
+        if (v.x > x_max)
+            x_max = v.x;
+        if (v.y < y_min)
+            y_min = v.y;
+        if (v.y > y_max)
+            y_max = v.y;
+    }
+
+    return {{x_min, y_min}, {x_max, y_max}};
 }

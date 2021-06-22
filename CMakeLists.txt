@@ -3,7 +3,17 @@ project(softbody)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(softbody src/main.cpp) 
+add_executable(softbody 
+src/main.cpp 
+src/World.cpp 
+src/Polygon.cpp 
+src/NarrowPhase.cpp 
+src/MathsUtils.cpp 
+src/DynamicBVHTree.cpp 
+src/Arbiter.cpp 
+src/AABB.cpp
+src/Drawer.cpp
+) 
 
 include_directories(headers /usr/include c:/SFML/include)
 

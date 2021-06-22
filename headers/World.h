@@ -5,6 +5,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <unordered_map>
 
 class World
 {
@@ -19,8 +20,9 @@ private:
     void BroadPhase();
 
     Vec2 Gravity;
-    float Iterations;
+    int Iterations;
     std::vector<std::shared_ptr<RigidBody>> Bodies;
+    std::unordered_map<std::shared_ptr<RigidBody>, int> BodyIndices;
     std::map<ArbiterKey, Arbiter> Arbiters;
     DynamicBVHTree CollisionTree; // I think the Add should add the body to this tree
 };

@@ -30,6 +30,7 @@ public:
     Arbiter(std::shared_ptr<RigidBody> const& body1, std::shared_ptr<RigidBody> const& body2);
     void PreStep(float invDt);
     void ApplyImpulse() const;
+    bool InContact() const;
 
 private:
     std::shared_ptr<RigidBody> Body1;
