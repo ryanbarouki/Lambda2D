@@ -1,8 +1,11 @@
 #include "../headers/World.h"
+#include <iostream>
 
 void World::Add(std::shared_ptr<RigidBody> const& body)
 {
     Bodies.push_back(body);
+    int bodyIndex = CollisionTree.Insert(body);
+    BodyIndices.insert({body, bodyIndex});
 }
 
 void World::Step(float dt)
@@ -15,7 +18,7 @@ void World::Step(float dt)
     // Integrate forces - do we need this at first?
     for (auto& body : Bodies)
     {
-        if (body->InvMass)
+        if (body->InvMass == 0.0f)
             continue;
 
         body->LinearVelocity += dt * (Gravity + body->InvMass * body->Force);
@@ -42,8 +45,7 @@ void World::Step(float dt)
     {
         // Euler integration
         body->Position += dt * body->LinearVelocity;
-        body->Angle += dt * body->AngularVelocity;
-
+        body->Rotate(dt * body->AngularVelocity);
         body->Force = {0.0f,0.0f};
         body->Torque = 0.0f;
     }
@@ -66,7 +68,7 @@ void World::BroadPhase()
 
         for (auto const& overlap : overlaps)
         {
-            auto overlapBody = CollisionTree.GetNode(bodyIndex).Object;
+            auto overlapBody = CollisionTree.GetNode(overlap).Object;
             Arbiter newArb(body, overlapBody);
             ArbiterKey arbKey(body, overlapBody);
             

@@ -3,18 +3,21 @@
 #include "MathsUtils.h"
 #include <vector>
 #include <optional>
+#include <memory>
 
+class RigidBody;
 // only convex polygons
 class Polygon : public IShape2 
 {
 private:
-    Vec2 Centre;
+    RigidBody const& Body;
     std::vector<Vec2> Vertices;
-    // std::vector<Vec2> Normals;
+
 public:
-    Polygon(std::vector<Vec2> const& vertices);
+    Polygon(std::vector<Vec2> const& vertices, RigidBody const& body);
+    Polygon(RigidBody const& body);
     Polygon() = default;
-    void SetSquare(Vec2 const& pos, float width);
+    void SetSquare(float width);
     std::vector<Vec2> GetAxes() const;
     std::vector<Vec2> GetVertices() const;
     void SetVertices(std::vector<Vec2> newVertices);

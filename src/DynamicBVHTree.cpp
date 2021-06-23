@@ -265,10 +265,11 @@ int DynamicBVHTree::Insert(std::shared_ptr<RigidBody> const& object)
 {
 	int nodeIndex = AllocateNode();
 	TreeNode& node = Nodes[nodeIndex];
-	AABB aabb = object->Shape->GetAABB();
+	AABB aabb = object->GetAABB();
 
 	// fatten the object's AABB before adding to tree
 	Vec2 fat{aabbFatFactor, aabbFatFactor};
+	node.FatAABB = aabb;
 	node.FatAABB.Fatten(fat);
 
 	node.Object = object;
@@ -283,7 +284,7 @@ std::vector<int> DynamicBVHTree::Query(int queryIndex) const
 {
 	std::vector<int> overlaps;
 	std::stack<int> stack;
-	AABB objectAABB = Nodes[queryIndex].Object->Shape->GetAABB();
+	AABB objectAABB = Nodes[queryIndex].Object->GetAABB();
 
 	stack.push(Root);
 

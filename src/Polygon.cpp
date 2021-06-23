@@ -1,18 +1,24 @@
 #include "../headers/Polygon.h"
 #include <limits>
+#include <iostream>
+#include "RigidBody.h"
 
-Polygon::Polygon(std::vector<Vec2> const& vertices) : Vertices(vertices)
+Polygon::Polygon(std::vector<Vec2> const& vertices, RigidBody const& body) : Vertices(vertices), Body(body)
 {
 }
 
-void Polygon::SetSquare(Vec2 const& pos, float width)
+Polygon::Polygon(RigidBody const& body) : Body(body)
+{
+}
+
+void Polygon::SetSquare(float width)
 {
     // is this the correct winding?
-    Vec2 h = {width, width};
-    Vec2 v1 = pos;
-    Vec2 v2 = {pos.x + width, pos.y};
-    Vec2 v3 = pos + h;
-    Vec2 v4 = {pos.x, pos.y + width};
+    Vec2 h = {width / 2, width / 2};
+    Vec2 v1 = {-h.x, -h.y};
+    Vec2 v2 = {h.x, -h.y};
+    Vec2 v3 = {h.x, h.y};
+    Vec2 v4 = {-h.x, h.y};
 
     Vertices = {v1, v2, v3, v4};
 }
@@ -30,6 +36,8 @@ std::vector<Vec2> Polygon::GetAxes() const
 
         axes.push_back(axis.Normalised());
     }
+
+    return axes;
 }
 
 std::vector<Vec2> Polygon::GetVertices() const
@@ -44,12 +52,12 @@ void Polygon::SetVertices(std::vector<Vec2> newVertices)
 
 Interval Polygon::Project(Vec2 const& normedAxis) const
 {
-    float min = normedAxis.Dot(Vertices[0]);
+    float min = normedAxis.Dot(Vertices[0] + Body.Position);
     float max = min;
 
-    for (int i = 0; i < Vertices.size(); ++i)
+    for (int i = 1; i < Vertices.size(); ++i)
     {
-        float p = normedAxis.Dot(Vertices[i]);
+        float p = normedAxis.Dot(Vertices[i] + Body.Position);
         if (p < min)
         {
             min = p;
@@ -60,7 +68,7 @@ Interval Polygon::Project(Vec2 const& normedAxis) const
         }
     }
 
-    return Interval{min, max};
+    return {min, max};
 }
 
 
@@ -71,17 +79,19 @@ EdgePair Polygon::FindBestEdge(Vec2 const& normal) const
     // find the farthest vertex in the polygon along the separation normal
     for (auto it = Vertices.begin(); it != Vertices.end(); ++it)
     {
-        float projection = normal.Dot(*it);
+        float projection = normal.Dot(*it + Body.Position);
         if (projection > max)
         {
             max = projection;
             furthestV = it;
         }
     }
-
-    Vec2 v = *furthestV;
-    Vec2 v0 = *(--furthestV); // previous vertex
-    Vec2 v1 = *(++furthestV); // next vertex
+    // std::cout << "Body with mass, " << Body.Mass << " and position, (" << Body.Position.x << ", " << Body.Position.y << ")\n";
+    Vec2 v = *furthestV + Body.Position;
+    Vec2 v0 = furthestV == Vertices.begin() ? *(Vertices.end() - 1) : *(furthestV - 1); // previous vertex
+    v0 += Body.Position;
+    Vec2 v1 = furthestV == Vertices.end() - 1? *(Vertices.begin()) : *(furthestV + 1); // previous vertex
+    v1 += Body.Position;
 
     Vec2 l = (v - v1).Normalised();
     Vec2 r = (v - v0).Normalised();

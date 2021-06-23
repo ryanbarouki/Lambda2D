@@ -13,6 +13,7 @@ src/DynamicBVHTree.cpp
 src/Arbiter.cpp 
 src/AABB.cpp
 src/Drawer.cpp
+src/RigidBody.cpp
 ) 
 
 include_directories(headers /usr/include c:/SFML/include)

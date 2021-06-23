@@ -31,6 +31,7 @@ public:
     void PreStep(float invDt);
     void ApplyImpulse() const;
     bool InContact() const;
+    std::vector<ContactPoint> const& GetContacts() const {return ContactManifold;}
 
 private:
     std::shared_ptr<RigidBody> Body1;

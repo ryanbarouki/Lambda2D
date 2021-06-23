@@ -95,13 +95,13 @@ std::vector<Vec2> NarrowPhase::Clip(Vec2 const& v1, Vec2 const& v2, Vec2 const& 
 // returns the contact manifold (list of contact points)
 std::vector<ContactPoint> NarrowPhase::FindContactPoints(Polygon const& poly1, Polygon const& poly2)
 {
-    auto pNormal = PolygonsCollide(poly1, poly2);
-    if (!pNormal)
+    auto pMTV = PolygonsCollide(poly1, poly2);
+    if (!pMTV)
     {
         return {};
     }
 
-    Vec2 normal = *pNormal;
+    Vec2 normal = pMTV->Normalised();
     EdgePair e1 = poly1.FindBestEdge(normal);
     EdgePair e2 = poly2.FindBestEdge(-normal);
 
@@ -116,7 +116,7 @@ std::vector<ContactPoint> NarrowPhase::FindContactPoints(Polygon const& poly1, P
     else
     {
         ref = e2;
-        ref = e1;
+        inc = e1;
 
         flip = true;
     }
@@ -132,7 +132,7 @@ std::vector<ContactPoint> NarrowPhase::FindContactPoints(Polygon const& poly1, P
 
     if (cp.size() < 2) return {};
 
-    Vec2 refNorm = ref.GetEdgeVec().Perp();
+    Vec2 refNorm = ref.GetEdgeVec().Perp().Normalised();
     if (flip) refNorm = -refNorm;
 
     float max = refNorm.Dot(ref.max);
