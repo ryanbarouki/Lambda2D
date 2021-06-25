@@ -53,6 +53,12 @@ void operator-=(Vec2& U, Vec2 const& V)
     U = U - V;
 }
 
+std::ostream& operator<<(std::ostream& stream, Vec2 const& U)
+{
+    stream << "(" << U.x << ", " << U.y << ")\n";
+    return stream;
+}
+
 float Vec2::SquaredLength() const
 {
     return x*x + y*y;

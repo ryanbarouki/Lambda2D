@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <math.h>
+#include <iostream>
 
 struct Interval
 {
@@ -87,6 +88,7 @@ Vec2 operator-(Vec2 const& U);
 Vec2 operator*(float scalar, Vec2 const& U);
 void operator+=(Vec2& U, Vec2 const& V);
 void operator-=(Vec2& U, Vec2 const& V);
+std::ostream& operator<<(std::ostream& stream, Vec2 const& U);
 
 inline float Cross(Vec2 const& a, Vec2 const& b)
 {

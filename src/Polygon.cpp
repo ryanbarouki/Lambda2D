@@ -65,12 +65,12 @@ void Polygon::SetVertices(std::vector<Vec2> newVertices)
 
 Interval Polygon::Project(Vec2 const& normedAxis) const
 {
-    float min = abs(normedAxis.Dot(Vertices[0] + Body.Position));
+    float min = normedAxis.Dot(Vertices[0] + Body.Position);
     float max = min;
 
     for (int i = 1; i < Vertices.size(); ++i)
     {
-        float p = abs(normedAxis.Dot(Vertices[i] + Body.Position));
+        float p = normedAxis.Dot(Vertices[i] + Body.Position);
         if (p < min)
         {
             min = p;
@@ -139,4 +139,9 @@ AABB Polygon::GetAABB() const
     }
 
     return {{x_min, y_min}, {x_max, y_max}};
+}
+
+Vec2 Polygon::GetPosition() const
+{
+    return Body.Position;
 }

@@ -24,5 +24,6 @@ public:
     void SetVertices(std::vector<Vec2> newVertices);
     Interval Project(Vec2 const& axis) const;
     AABB GetAABB() const override;
+    Vec2 GetPosition() const;
     EdgePair FindBestEdge(Vec2 const& normal) const;
 };
