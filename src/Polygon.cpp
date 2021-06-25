@@ -23,6 +23,19 @@ void Polygon::SetSquare(float width)
     Vertices = {v1, v2, v3, v4};
 }
 
+void Polygon::SetRectangle(float width, float height)
+{
+    // is this the correct winding?
+    Vec2 w = {width / 2, width / 2};
+    Vec2 h = {height / 2, height / 2};
+    Vec2 v1 = {-w.x, -h.y};
+    Vec2 v2 = {w.x, -h.y};
+    Vec2 v3 = {w.x, h.y};
+    Vec2 v4 = {-w.x, h.y};
+
+    Vertices = {v1, v2, v3, v4};
+}
+
 std::vector<Vec2> Polygon::GetAxes() const
 {
     std::vector<Vec2> axes;
@@ -52,12 +65,12 @@ void Polygon::SetVertices(std::vector<Vec2> newVertices)
 
 Interval Polygon::Project(Vec2 const& normedAxis) const
 {
-    float min = normedAxis.Dot(Vertices[0] + Body.Position);
+    float min = abs(normedAxis.Dot(Vertices[0] + Body.Position));
     float max = min;
 
     for (int i = 1; i < Vertices.size(); ++i)
     {
-        float p = normedAxis.Dot(Vertices[i] + Body.Position);
+        float p = abs(normedAxis.Dot(Vertices[i] + Body.Position));
         if (p < min)
         {
             min = p;
@@ -74,7 +87,7 @@ Interval Polygon::Project(Vec2 const& normedAxis) const
 
 EdgePair Polygon::FindBestEdge(Vec2 const& normal) const
 {
-    float max = std::numeric_limits<float>::min();
+    float max = -std::numeric_limits<float>::max();
     auto furthestV = Vertices.begin();
     // find the farthest vertex in the polygon along the separation normal
     for (auto it = Vertices.begin(); it != Vertices.end(); ++it)

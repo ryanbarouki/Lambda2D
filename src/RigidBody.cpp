@@ -33,6 +33,24 @@ void RigidBody::SetSquare(float width)
     {
         pPolygon->SetSquare(width);
     }
+    // moment of inertia of a square about centre
+    I = Mass * width * width / 6;
+    InvI = 1.0f / I;
+}
+
+void RigidBody::SetRectangle(float width, float height, bool phys /* = true */)
+{
+    auto pPolygon = dynamic_cast<Polygon*>(Shape.get());
+    if (pPolygon)
+    {
+        pPolygon->SetRectangle(width, height);
+    }
+    if (phys)
+    {
+        // moment of inertia of a square about centre
+        I = Mass * (height * height + width * width)/ 12;
+        InvI = 1.0f / I;
+    }
 }
 
 void RigidBody::Rotate(float dA)

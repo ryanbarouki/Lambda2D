@@ -3,6 +3,7 @@
 #include "../headers/Polygon.h"
 #include <memory>
 #include <iostream>
+#include <sstream>
 
 void Drawer::DrawBody(std::shared_ptr<RigidBody> const& body)
 {
@@ -32,8 +33,17 @@ void Drawer::DrawContacts(std::map<ArbiterKey, Arbiter> const& arbiters)
         for (auto const& c : arb.GetContacts())
         {
             sf::CircleShape point(2.0f);
+            sf::Text coords;
+            std::stringstream coordStr;
+            coordStr << "(" << c.point.x << ", " << c.point.y << ")";
+            sf::Font font;
+            font.loadFromFile("..\\arial.ttf");
+            coords.setFont(font);
+            coords.setString(coordStr.str());
+            coords.setFillColor(sf::Color::Red);
             point.setPosition({c.point.x, c.point.y});
             point.setFillColor(sf::Color::Red);
+            Window.draw(coords);
             Window.draw(point);
         }
     }

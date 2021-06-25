@@ -18,6 +18,7 @@ public:
     Polygon(RigidBody const& body);
     Polygon() = default;
     void SetSquare(float width);
+    void SetRectangle(float width, float height);
     std::vector<Vec2> GetAxes() const;
     std::vector<Vec2> GetVertices() const;
     void SetVertices(std::vector<Vec2> newVertices);

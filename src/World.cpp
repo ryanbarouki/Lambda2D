@@ -53,7 +53,6 @@ void World::Step(float dt)
 
 void World::BroadPhase()
 {
-    // TODO: Implement this
     for (auto const& body : Bodies)
     {
         int bodyIndex = BodyIndices[body];
@@ -64,6 +63,8 @@ void World::BroadPhase()
 
         auto const& fatAABB = CollisionTree.GetFatAABB(bodyIndex);
 
+        // TODO: Make sure this is the best place for it    static int count = 0; 
+        CollisionTree.UpdateLeaf(bodyIndex, body->GetAABB(), {0,0});
         auto overlaps = CollisionTree.Query(bodyIndex); // can this be done more efficiently?
 
         for (auto const& overlap : overlaps)
@@ -77,13 +78,14 @@ void World::BroadPhase()
                 auto it = Arbiters.find(arbKey);
                 if (it == Arbiters.end())
                 {
-                    Arbiters.insert(std::make_pair(arbKey, newArb));
+                    Arbiters.insert({arbKey, newArb});
                 }
                 else
                 {
                     // update existing Arbiter pair
                     // for now just do the same
-                    Arbiters.insert(std::make_pair(arbKey, newArb));
+                    Arbiters[arbKey] = newArb;
+                    // Arbiters.insert(std::make_pair(arbKey, newArb));
                 }
             }
             else

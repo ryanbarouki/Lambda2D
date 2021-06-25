@@ -28,6 +28,7 @@ class Arbiter
 {
 public:
     Arbiter(std::shared_ptr<RigidBody> const& body1, std::shared_ptr<RigidBody> const& body2);
+    Arbiter() = default;
     void PreStep(float invDt);
     void ApplyImpulse() const;
     bool InContact() const;

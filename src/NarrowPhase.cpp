@@ -1,4 +1,5 @@
 #include "../headers/NarrowPhase.h"
+#include <iostream>
 
 std::optional<Vec2> NarrowPhase::PolygonsCollide(Polygon const& poly1, Polygon const& poly2)
 {
@@ -95,6 +96,13 @@ std::vector<Vec2> NarrowPhase::Clip(Vec2 const& v1, Vec2 const& v2, Vec2 const& 
 // returns the contact manifold (list of contact points)
 std::vector<ContactPoint> NarrowPhase::FindContactPoints(Polygon const& poly1, Polygon const& poly2)
 {
+    static int count = 0;
+    if (count % 1000 == 0)
+    {
+        std::cout << "Break\n";
+    }
+    count++;
+
     auto pMTV = PolygonsCollide(poly1, poly2);
     if (!pMTV)
     {
@@ -133,7 +141,7 @@ std::vector<ContactPoint> NarrowPhase::FindContactPoints(Polygon const& poly1, P
     if (cp.size() < 2) return {};
 
     Vec2 refNorm = ref.GetEdgeVec().Perp().Normalised();
-    if (flip) refNorm = -refNorm;
+    // if (flip) refNorm = -refNorm;
 
     float max = refNorm.Dot(ref.max);
 
@@ -147,7 +155,7 @@ std::vector<ContactPoint> NarrowPhase::FindContactPoints(Polygon const& poly1, P
     }
     if (cp2.depth < 0.0f)
     {
-        cps.erase(cps.begin()++);
+        cps.erase(cps.begin() + 1);
     }
 
     return cps;

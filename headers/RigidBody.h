@@ -19,6 +19,7 @@ public:
     AABB GetAABB();
     void SetSquare(float width);
     void Rotate(float dA);
+    void SetRectangle(float width, float height, bool phys = true);
 
     Vec2 Position = {0.0f, 0.0f};
     Vec2 LinearVelocity = {0.0f, 0.0f};
