@@ -1,4 +1,7 @@
 # 2D Rigid Body Physics (Possibly Soft Body in the future)
 ## TODO
-- Draw a basic example
-- Fix contact bugs
+- Position correction
+- Warm starting
+- Impulse accumulation
+- More interesting examples/tests
+- Joints

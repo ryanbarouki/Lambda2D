@@ -37,7 +37,7 @@ void Drawer::DrawContacts(std::map<ArbiterKey, Arbiter> const& arbiters)
             std::stringstream coordStr;
             coordStr << "(" << c.point.x << ", " << c.point.y << ")";
             sf::Font font;
-            font.loadFromFile("..\\arial.ttf");
+            font.loadFromFile("..\\resources\\arial.ttf");
             coords.setFont(font);
             coords.setString(coordStr.str());
             coords.setFillColor(sf::Color::Red);
