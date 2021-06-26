@@ -8,10 +8,13 @@ class Drawer
 {
 public:
 
-    Drawer(sf::RenderWindow& window) : Window(window) {}
-    void DrawBody(std::shared_ptr<RigidBody> const& body);
-    void DrawContacts(std::map<ArbiterKey, Arbiter> const& arbiters);
+    Drawer(sf::RenderWindow& window, World& world) : Window(window), World(world) {}
+    void DrawWorld();
+
 private:
 
+    void DrawBody(std::shared_ptr<RigidBody> const& body);
+    void DrawContacts(std::map<ArbiterKey, Arbiter> const& arbiters);
     sf::RenderWindow& Window;
+    World& World;
 };

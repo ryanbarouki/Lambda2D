@@ -7,15 +7,11 @@
 class RigidBody
 {
 public:
-    RigidBody() : Shape(std::make_unique<Polygon>(*this))
-    {
-    }
+    RigidBody(Vec2 const& position, float mass);
+    RigidBody(Vec2 const& position);
+    RigidBody(RigidBody const& body);
+    // should really define the copy assignment operator and move bois too
 
-    RigidBody(std::unique_ptr<IShape2> shape, float mass) : Shape(std::move(shape)), Mass(mass)
-    {
-        InvMass = mass != 0 ? 1.0f / mass : 0.0f;
-    }
-    // add more constructors and methods 
     AABB GetAABB();
     void SetSquare(float width);
     void Rotate(float dA);

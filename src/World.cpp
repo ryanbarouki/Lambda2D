@@ -1,11 +1,12 @@
 #include "../headers/World.h"
 #include <iostream>
 
-void World::Add(std::shared_ptr<RigidBody> const& body)
+void World::Add(RigidBody const& body)
 {
-    Bodies.push_back(body);
-    int bodyIndex = CollisionTree.Insert(body);
-    BodyIndices.insert({body, bodyIndex});
+    auto bodyPtr = std::make_shared<RigidBody>(std::move(body));
+    Bodies.push_back(bodyPtr);
+    int bodyIndex = CollisionTree.Insert(bodyPtr);
+    BodyIndices.insert({bodyPtr, bodyIndex});
 }
 
 void World::Step(float dt)

@@ -5,6 +5,14 @@
 #include <iostream>
 #include <sstream>
 
+void Drawer::DrawWorld()
+{
+    for (auto const& body : World.GetBodies())
+    {
+        DrawBody(body);
+    }
+}
+
 void Drawer::DrawBody(std::shared_ptr<RigidBody> const& body)
 {
     // Mat22 R(body->Angle);

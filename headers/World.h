@@ -14,8 +14,9 @@ public:
     {}
 
     void Step(float dt);
-    void Add(std::shared_ptr<RigidBody> const& body);
+    void Add(RigidBody const& body);
     std::map<ArbiterKey, Arbiter> const& GetArbiters() const {return Arbiters;}
+    std::vector<std::shared_ptr<RigidBody>> const& GetBodies() const {return Bodies;}
 
 private:
     void BroadPhase();

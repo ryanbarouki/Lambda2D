@@ -2,6 +2,36 @@
 #include "Polygon.h"
 
 
+RigidBody::RigidBody(Vec2 const& position, float mass) : Position(position), Mass(mass), Shape(std::make_unique<Polygon>(*this))
+{
+    InvMass = Mass != 0.0f ? 1.0f / Mass : 0.0f;
+}
+
+RigidBody::RigidBody(Vec2 const& position) : Position(position), Shape(std::make_unique<Polygon>(*this))
+{
+}
+
+RigidBody::RigidBody(RigidBody const& body) 
+: Position(body.Position),
+LinearVelocity(body.LinearVelocity),
+Mass(body.Mass),
+InvMass(body.InvMass),
+Angle(body.Angle), 
+AngularVelocity(body.AngularVelocity),
+I(body.I),
+InvI(body.InvI),
+Force(body.Force),
+Torque(body.Torque),
+Friction(body.Friction),
+Aabb(body.Aabb)
+{
+    auto pPolygon = dynamic_cast<Polygon*>(body.Shape.get());
+    if (pPolygon)
+    {
+        Shape = std::make_unique<Polygon>(pPolygon->GetVertices(), *this);
+    }
+}
+
 AABB RigidBody::GetAABB() 
 {
     // only works for polgons: need to figure this out for general shapes
