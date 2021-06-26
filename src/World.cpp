@@ -35,7 +35,7 @@ void World::Step(float dt)
     // Do iterations i.e. ApplyImpulse over a few iterations
     for (int i = 0; i < Iterations; ++i)
     {
-        for (auto const& [arbKey, arb] : Arbiters)
+        for (auto& [arbKey, arb] : Arbiters)
         {
             arb.ApplyImpulse();
         }

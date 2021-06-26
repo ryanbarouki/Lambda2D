@@ -79,6 +79,9 @@ struct ContactPoint
     float massNormal;
     float massTangent;
     float bias = 0.0f;
+    float Pn; // accumulated normal impluse
+    float Pt; // accumulated tangent impulse
+    float Pnb; // accumulated normal impulse for position bias
 };
 
 // vector operations

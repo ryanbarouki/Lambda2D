@@ -18,6 +18,8 @@ public:
     std::map<ArbiterKey, Arbiter> const& GetArbiters() const {return Arbiters;}
     std::vector<std::shared_ptr<RigidBody>> const& GetBodies() const {return Bodies;}
 
+    static const bool accumulateImpulses = true;
+
 private:
     void BroadPhase();
 

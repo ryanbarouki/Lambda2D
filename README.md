@@ -4,9 +4,9 @@
 
 ## Features
 ### Next
-- Position correction
+- ~~Position correction~~
+- ~~Impulse accumulation~~
 - Warm starting
-- Impulse accumulation
 - More interesting examples/tests
 - Joints
 

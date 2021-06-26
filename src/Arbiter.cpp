@@ -1,5 +1,6 @@
 #include "../headers/Arbiter.h"
 #include "../headers/NarrowPhase.h"
+#include "../headers/World.h"
 #include <cmath>
 #include <iostream>
 
@@ -67,10 +68,20 @@ void Arbiter::PreStep(float invDt)
         c.bias = -biasFactor * invDt * std::min(0.0f, c.depth + allowedPenetration);
 
         // accumulateImpulses? will leave that for now too 
+        if (World::accumulateImpulses)
+        {
+            Vec2 P = c.Pn * c.normal + c.Pt * tangent;
+
+            Body1->LinearVelocity -= Body1->InvMass * P;
+            Body1->AngularVelocity -= Body1->InvI * Cross(r1, P);
+
+            Body2->LinearVelocity += Body2->InvMass * P;
+            Body2->AngularVelocity += Body2->InvI * Cross(r2, P);
+        }
     }
 }
 
-void Arbiter::ApplyImpulse() const
+void Arbiter::ApplyImpulse()
 {
     for (auto& c : ContactManifold)
     {
@@ -86,7 +97,16 @@ void Arbiter::ApplyImpulse() const
         float dPn = c.massNormal * (-normalImp + c.bias); 
 
         // something about accumulating impulses here too that will come back to
-        dPn = std::max(dPn, 0.0f);
+        if (World::accumulateImpulses)
+        {
+            float Pn0 = c.Pn;
+            c.Pn = std::max(Pn0 + dPn, 0.0f);
+            dPn = c.Pn - Pn0;
+        }
+        else
+        {
+            dPn = std::max(dPn, 0.0f);
+        }
 
         // apply contact impulse
         Vec2 Pn = dPn * c.normal;
@@ -105,9 +125,19 @@ void Arbiter::ApplyImpulse() const
         float dPt = c.massTangent * (-relVt);
 
         // accumulate impulse stuff again
+        if (World::accumulateImpulses)
+        {
+            float maxPt = Friction * c.Pn;
 
-        float maxPt = Friction * dPn;
-        dPt = Clamp(dPt, -maxPt, maxPt);
+            float oldTangentImpulse = c.Pt;
+            c.Pt = Clamp(oldTangentImpulse + dPt, -maxPt, maxPt);
+            dPt = c.Pt - oldTangentImpulse;
+        }
+        else
+        {
+            float maxPt = Friction * dPn;
+            dPt = Clamp(dPt, -maxPt, maxPt);
+        }
 
         // apply contact impulse
         Vec2 Pt = dPt * tangent;

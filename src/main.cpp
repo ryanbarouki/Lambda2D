@@ -45,7 +45,7 @@ void Demo2(World& world)
     world.Add(floor);
 }
 
-constexpr int FRAME_RATE = 60;
+constexpr int FRAME_RATE = 150;
 constexpr bool CONST_FRAME_RATE = true;
 int main() 
 {
