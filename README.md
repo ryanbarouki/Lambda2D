@@ -1,6 +1,6 @@
 # 2D Rigid Body Physics (Possibly Soft Body in the future)
 ## Bugs
-- Broad Phase bug with too many objects
+- ~~Broad Phase bug with too many objects~~
 
 ## Features
 ### Next

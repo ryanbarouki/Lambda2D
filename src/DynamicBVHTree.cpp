@@ -128,35 +128,33 @@ void DynamicBVHTree::InsertLeaf(int leafNodeIndex)
 	int sibling = idx;
 
 	int oldParentIndex = Nodes[sibling].Parent;
-	TreeNode& oldParent = Nodes[oldParentIndex];
 	int newParentIndex = AllocateNode();
-	TreeNode& newParent = Nodes[newParentIndex];	
-	newParent.Parent = oldParentIndex;
-	newParent.FatAABB = MergeAABB(Nodes[leafNodeIndex].FatAABB, Nodes[sibling].FatAABB);
-	newParent.Height = Nodes[sibling].Height + 1;
+	Nodes[newParentIndex].Parent = oldParentIndex;
+	Nodes[newParentIndex].FatAABB = MergeAABB(Nodes[leafNodeIndex].FatAABB, Nodes[sibling].FatAABB);
+	Nodes[newParentIndex].Height = Nodes[sibling].Height + 1;
 
 	if (oldParentIndex != nullNode)
 	{
 		// sibling is not the root
-		if (oldParent.LeftChild == sibling)
+		if (Nodes[oldParentIndex].LeftChild == sibling)
 		{
-			oldParent.LeftChild = newParentIndex;
+			Nodes[oldParentIndex].LeftChild = newParentIndex;
 		}
 		else
 		{
-			oldParent.RightChild = newParentIndex;
+			Nodes[oldParentIndex].RightChild = newParentIndex;
 		}
 
-		newParent.LeftChild = sibling;
-		newParent.RightChild = leafNodeIndex;
+		Nodes[newParentIndex].LeftChild = sibling;
+		Nodes[newParentIndex].RightChild = leafNodeIndex;
 		Nodes[sibling].Parent = newParentIndex;
 		Nodes[leafNodeIndex].Parent = newParentIndex;
 	}
 	else
 	{
 		// the sibling was the root
-		newParent.LeftChild = sibling;
-		newParent.RightChild = leafNodeIndex;
+		Nodes[newParentIndex].LeftChild = sibling;
+		Nodes[newParentIndex].RightChild = leafNodeIndex;
 		Nodes[sibling].Parent = newParentIndex;
 		Nodes[leafNodeIndex].Parent = newParentIndex;
 		Root = newParentIndex;
@@ -192,12 +190,9 @@ void DynamicBVHTree::RemoveLeaf(int leafNodeIndex)
 		return;
 	}
 
-	TreeNode& leafNode = Nodes[leafNodeIndex];
-	int parentNodeIndex = leafNode.Parent;
-	TreeNode const& parentNode = Nodes[parentNodeIndex];
-	int grandParentIndex = parentNode.Parent;
-	int siblingIndex = parentNode.LeftChild == leafNodeIndex ? parentNode.RightChild : parentNode.LeftChild;
-	TreeNode& sibling = Nodes[siblingIndex];
+	int parentNodeIndex = Nodes[leafNodeIndex].Parent;
+	int grandParentIndex = Nodes[parentNodeIndex].Parent;
+	int siblingIndex = Nodes[parentNodeIndex].LeftChild == leafNodeIndex ? Nodes[parentNodeIndex].RightChild : Nodes[parentNodeIndex].LeftChild;
 
 	if (grandParentIndex != nullNode)
 	{
@@ -211,7 +206,7 @@ void DynamicBVHTree::RemoveLeaf(int leafNodeIndex)
 		{
 			grandParent.RightChild = siblingIndex;
 		}
-		sibling.Parent = grandParentIndex;
+		Nodes[siblingIndex].Parent = grandParentIndex;
 		DeallocateNode(parentNodeIndex);
 
 		FixTree(grandParentIndex);
@@ -219,7 +214,7 @@ void DynamicBVHTree::RemoveLeaf(int leafNodeIndex)
 	else
 	{
 		Root = siblingIndex;
-		sibling.Parent = nullNode;
+		Nodes[siblingIndex].Parent = nullNode;
 		DeallocateNode(parentNodeIndex);
 	}
 
@@ -228,10 +223,8 @@ void DynamicBVHTree::RemoveLeaf(int leafNodeIndex)
 
 void DynamicBVHTree::UpdateLeaf(int leafNodeIndex, AABB const& newAABB, Vec2 const& displacement)
 {
-	TreeNode& node = Nodes[leafNodeIndex];
-
 	// if the current AABB contains the new AABB then do nothing
-	if (node.FatAABB.Contains(newAABB))
+	if (Nodes[leafNodeIndex].FatAABB.Contains(newAABB))
 		return;
 
 	AABB fatAABB = newAABB; 
@@ -259,23 +252,22 @@ void DynamicBVHTree::UpdateLeaf(int leafNodeIndex, AABB const& newAABB, Vec2 con
 	}
 
 	RemoveLeaf(leafNodeIndex);
-	node.FatAABB = fatAABB;
+	Nodes[leafNodeIndex].FatAABB = fatAABB;
 	InsertLeaf(leafNodeIndex);
 }
 
 int DynamicBVHTree::Insert(std::shared_ptr<RigidBody> const& object)
 {
 	int nodeIndex = AllocateNode();
-	TreeNode& node = Nodes[nodeIndex];
 	AABB aabb = object->GetAABB();
 
 	// fatten the object's AABB before adding to tree
 	Vec2 fat{aabbFatFactor, aabbFatFactor};
-	node.FatAABB = aabb;
-	node.FatAABB.Fatten(fat);
+	Nodes[nodeIndex].FatAABB = aabb;
+	Nodes[nodeIndex].FatAABB.Fatten(fat);
 
-	node.Object = object;
-	node.Height = 0;
+	Nodes[nodeIndex].Object = object;
+	Nodes[nodeIndex].Height = 0;
 
 	InsertLeaf(nodeIndex);
 	

@@ -32,7 +32,7 @@ void Demo1(World& world)
 // stack
 void Demo2(World& world)
 {
-    for (int i = 0; i < 20; ++i)
+    for (int i = 0; i < 15; ++i)
     {
         RigidBody body({500.0f, 100.0f + 60.0f * i}, 2.0f);
         body.LinearVelocity = {10.0f * i, 0.0f};
@@ -40,18 +40,21 @@ void Demo2(World& world)
         world.Add(body);
     } 
 
-    RigidBody floor({500.0f, 800.0f});
+    RigidBody floor({500.0f, 970.0f});
     floor.SetRectangle(1000.0f, 10.0f, false);
     world.Add(floor);
 }
 
-static bool DEBUG = true;
 constexpr int FRAME_RATE = 60;
+constexpr bool CONST_FRAME_RATE = true;
 int main() 
 {
     sf::Clock Clock;
     sf::RenderWindow window(sf::VideoMode(1000, 1000), "Rigid Body Physics");
-    window.setFramerateLimit(FRAME_RATE);
+
+    if (CONST_FRAME_RATE)
+        window.setFramerateLimit(FRAME_RATE);
+
     World world({0.0f, 980.0f}, 10);
     Drawer drawer(window, world);
 
@@ -66,7 +69,7 @@ int main()
                 window.close();
         }
 
-        world.Step(1.0f/FRAME_RATE);
+        world.Step(CONST_FRAME_RATE ? 1.0f/FRAME_RATE : dt.asSeconds());
         window.clear();
         drawer.DrawWorld();
         window.display();

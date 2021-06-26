@@ -39,6 +39,8 @@ Arbiter::Arbiter(std::shared_ptr<RigidBody> const& body1, std::shared_ptr<RigidB
 
 void Arbiter::PreStep(float invDt) 
 {
+    const float allowedPenetration = 0.01f;
+    float biasFactor = 0.2f;
     for (auto& c : ContactManifold)
     {
         // vectors from centre of Body to contact point
@@ -62,7 +64,7 @@ void Arbiter::PreStep(float invDt)
         kTangent += Body1->InvI * (r1.Dot(r1) - rt1 * rt1) + Body2->InvI * (r2.Dot(r2) - rt2 * rt2);
         c.massTangent = 1.0f / kTangent;
         
-        // bias but will leave that for now - invDt is used here
+        c.bias = -biasFactor * invDt * std::min(0.0f, c.depth + allowedPenetration);
 
         // accumulateImpulses? will leave that for now too 
     }
