@@ -3,7 +3,7 @@
 
 void World::Add(RigidBody const& body)
 {
-    auto bodyPtr = std::make_shared<RigidBody>(std::move(body));
+    auto bodyPtr = std::make_shared<RigidBody>(body);
     Bodies.push_back(bodyPtr);
     int bodyIndex = CollisionTree.Insert(bodyPtr);
     BodyIndices.insert({bodyPtr, bodyIndex});
@@ -64,7 +64,7 @@ void World::BroadPhase()
 
         auto const& fatAABB = CollisionTree.GetFatAABB(bodyIndex);
 
-        // TODO: Make sure this is the best place for it    static int count = 0; 
+        // TODO: Make sure this is the best place for it   
         CollisionTree.UpdateLeaf(bodyIndex, body->GetAABB(), {0,0});
         auto overlaps = CollisionTree.Query(bodyIndex); // can this be done more efficiently?
 

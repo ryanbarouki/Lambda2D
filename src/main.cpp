@@ -4,15 +4,9 @@
 #include "Drawer.h"
 #include "Polygon.h"
 
-static bool DEBUG = false;
-int main() 
+void Demo1(World& world)
 {
-    sf::Clock Clock;
-    sf::RenderWindow window(sf::VideoMode(1000, 1000), "SoftBody");
-    World world({0.0f, 500.0f}, 10);
-    Drawer drawer(window, world);
-
-    // Bodies 
+    // Bodies
     RigidBody body({500.0f, 300.0f}, 2.0f);
     body.SetRectangle(100.0f, 200.f);
 
@@ -22,13 +16,46 @@ int main()
     body2.SetSquare(100.0f);
     body2.Rotate(1.0f);
 
+    RigidBody body3({300.0f, 300.0f}, 2.0f);
+    body3.SetRectangle(100.0f, 200.f);
+    body3.LinearVelocity = {200.0f, 0.0f};
+
     RigidBody floor({500.0f, 800.0f});
     floor.SetRectangle(1000.0f, 10.0f, false);
 
     world.Add(body);
     world.Add(body2);
+    world.Add(body3);
     world.Add(floor);
-    
+}
+
+// stack
+void Demo2(World& world)
+{
+    for (int i = 0; i < 20; ++i)
+    {
+        RigidBody body({500.0f, 100.0f + 60.0f * i}, 2.0f);
+        body.LinearVelocity = {10.0f * i, 0.0f};
+        body.SetSquare(40.0f);
+        world.Add(body);
+    } 
+
+    RigidBody floor({500.0f, 800.0f});
+    floor.SetRectangle(1000.0f, 10.0f, false);
+    world.Add(floor);
+}
+
+static bool DEBUG = true;
+constexpr int FRAME_RATE = 60;
+int main() 
+{
+    sf::Clock Clock;
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Rigid Body Physics");
+    window.setFramerateLimit(FRAME_RATE);
+    World world({0.0f, 980.0f}, 10);
+    Drawer drawer(window, world);
+
+    Demo2(world);
     while (window.isOpen())
     {
         sf::Time dt = Clock.restart();
@@ -39,7 +66,7 @@ int main()
                 window.close();
         }
 
-        world.Step(DEBUG ? 0.001f : dt.asSeconds());
+        world.Step(1.0f/FRAME_RATE);
         window.clear();
         drawer.DrawWorld();
         window.display();

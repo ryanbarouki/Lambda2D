@@ -1,6 +1,7 @@
 #include "../headers/DynamicBVHTree.h"
 #include <cassert>
 #include <stack>
+#include <iostream>
 
 DynamicBVHTree::DynamicBVHTree() : NodeCapacity(16), FreeIndex(0), AllocatedNodeCount(0), Root(nullNode)
 {
@@ -51,7 +52,8 @@ int DynamicBVHTree::AllocateNode()
 
 void DynamicBVHTree::DeallocateNode(int nodeIndex)
 {
-	assert(nodeIndex >= 0 && nodeIndex < NodeCapacity);
+	assert(nodeIndex >= 0);
+	assert(nodeIndex < NodeCapacity);
 	assert(AllocatedNodeCount > 0);
 
 	TreeNode& node = Nodes[nodeIndex];
@@ -67,11 +69,11 @@ void DynamicBVHTree::InsertLeaf(int leafNodeIndex)
 	if (Root == nullNode)
 	{
 		Root = leafNodeIndex;
+		// Nodes[Root].Parent = nullNode;
 		return;
 	}
 
 	// find the best place to put the new leaf
-	TreeNode& leafNode = Nodes[leafNodeIndex];
 	int idx = Root;
 	while (!Nodes[idx].IsLeaf())
 	{
@@ -81,7 +83,7 @@ void DynamicBVHTree::InsertLeaf(int leafNodeIndex)
 
 		float area = currNode.FatAABB.GetPerimeter();
 
-		float combinedArea = MergeAABB(currNode.FatAABB, leafNode.FatAABB).GetPerimeter();
+		float combinedArea = MergeAABB(currNode.FatAABB, Nodes[leafNodeIndex].FatAABB).GetPerimeter();
 
 		float cost = 2.0f * combinedArea;
 
@@ -91,11 +93,11 @@ void DynamicBVHTree::InsertLeaf(int leafNodeIndex)
 		float leftChildCost;
 		if (leftChild.IsLeaf())
 		{
-			leftChildCost = MergeAABB(leafNode.FatAABB, leftChild.FatAABB).GetPerimeter() + minInheritanceTax;
+			leftChildCost = MergeAABB(Nodes[leafNodeIndex].FatAABB, leftChild.FatAABB).GetPerimeter() + minInheritanceTax;
 		}
 		else
 		{
-			float newArea = MergeAABB(leafNode.FatAABB, leftChild.FatAABB).GetPerimeter();	
+			float newArea = MergeAABB(Nodes[leafNodeIndex].FatAABB, leftChild.FatAABB).GetPerimeter();	
 			float oldArea = leftChild.FatAABB.GetPerimeter();
 			leftChildCost = (newArea - oldArea) + minInheritanceTax;
 		}
@@ -104,11 +106,11 @@ void DynamicBVHTree::InsertLeaf(int leafNodeIndex)
 		float rightChildCost;
 		if (rightChild.IsLeaf())
 		{
-			rightChildCost = MergeAABB(leafNode.FatAABB, rightChild.FatAABB).GetPerimeter() + minInheritanceTax;
+			rightChildCost = MergeAABB(Nodes[leafNodeIndex].FatAABB, rightChild.FatAABB).GetPerimeter() + minInheritanceTax;
 		}
 		else
 		{
-			float newArea = MergeAABB(leafNode.FatAABB, rightChild.FatAABB).GetPerimeter();	
+			float newArea = MergeAABB(Nodes[leafNodeIndex].FatAABB, rightChild.FatAABB).GetPerimeter();	
 			float oldArea = rightChild.FatAABB.GetPerimeter();
 			rightChildCost = (newArea - oldArea) + minInheritanceTax;
 		}
@@ -130,7 +132,7 @@ void DynamicBVHTree::InsertLeaf(int leafNodeIndex)
 	int newParentIndex = AllocateNode();
 	TreeNode& newParent = Nodes[newParentIndex];	
 	newParent.Parent = oldParentIndex;
-	newParent.FatAABB = MergeAABB(leafNode.FatAABB, Nodes[sibling].FatAABB);
+	newParent.FatAABB = MergeAABB(Nodes[leafNodeIndex].FatAABB, Nodes[sibling].FatAABB);
 	newParent.Height = Nodes[sibling].Height + 1;
 
 	if (oldParentIndex != nullNode)
@@ -148,7 +150,7 @@ void DynamicBVHTree::InsertLeaf(int leafNodeIndex)
 		newParent.LeftChild = sibling;
 		newParent.RightChild = leafNodeIndex;
 		Nodes[sibling].Parent = newParentIndex;
-		leafNode.Parent = newParentIndex;
+		Nodes[leafNodeIndex].Parent = newParentIndex;
 	}
 	else
 	{
@@ -156,12 +158,12 @@ void DynamicBVHTree::InsertLeaf(int leafNodeIndex)
 		newParent.LeftChild = sibling;
 		newParent.RightChild = leafNodeIndex;
 		Nodes[sibling].Parent = newParentIndex;
-		leafNode.Parent = newParentIndex;
+		Nodes[leafNodeIndex].Parent = newParentIndex;
 		Root = newParentIndex;
 	}
 
 	// goes back up the tree fixing the AABBs of parents
-	FixTree(leafNode.Parent);	
+	FixTree(Nodes[leafNodeIndex].Parent);	
 }
 
 void DynamicBVHTree::FixTree(int nodeIndex)
@@ -221,7 +223,7 @@ void DynamicBVHTree::RemoveLeaf(int leafNodeIndex)
 		DeallocateNode(parentNodeIndex);
 	}
 
-	leafNode.Parent = nullNode;	
+	Nodes[leafNodeIndex].Parent = nullNode;	
 }
 
 void DynamicBVHTree::UpdateLeaf(int leafNodeIndex, AABB const& newAABB, Vec2 const& displacement)

@@ -1,5 +1,8 @@
 # 2D Rigid Body Physics (Possibly Soft Body in the future)
-## TODO
+## Bugs
+- Broad Phase bug with too many objects
+
+## Features
 ### Next
 - Position correction
 - Warm starting
