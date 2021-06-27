@@ -33,6 +33,7 @@ public:
     void ApplyImpulse();
     bool InContact() const;
     std::vector<ContactPoint> const& GetContacts() const {return ContactManifold;}
+    void UpdateContacts(std::vector<ContactPoint> const& newContacts);
 
 private:
     std::shared_ptr<RigidBody> Body1;

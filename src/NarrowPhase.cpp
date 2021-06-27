@@ -137,8 +137,8 @@ std::vector<ContactPoint> NarrowPhase::FindContactPoints(Polygon const& poly1, P
     float max = refNorm.Dot(ref.max);
 
     // make sure the final points are not past the max
-    ContactPoint cp1 = {cp[0], normal, refNorm.Dot(cp[0]) - max};
-    ContactPoint cp2 = {cp[1], normal, refNorm.Dot(cp[1]) - max};
+    ContactPoint cp1 = {cp[0], normal, refNorm.Dot(cp[0]) - max, inc.edgeNum};
+    ContactPoint cp2 = {cp[1], normal, refNorm.Dot(cp[1]) - max, inc.edgeNum};
     std::vector<ContactPoint> cps = {cp1, cp2};
     if (cp1.depth < 0.0f)
     {

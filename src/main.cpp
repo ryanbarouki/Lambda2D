@@ -19,6 +19,7 @@ void Demo1(World& world)
     RigidBody body3({300.0f, 300.0f}, 2.0f);
     body3.SetRectangle(100.0f, 200.f);
     body3.LinearVelocity = {200.0f, 0.0f};
+    body3.AngularVelocity = 6.0f;
 
     RigidBody floor({500.0f, 800.0f});
     floor.SetRectangle(1000.0f, 10.0f, false);
@@ -32,16 +33,44 @@ void Demo1(World& world)
 // stack
 void Demo2(World& world)
 {
-    for (int i = 0; i < 15; ++i)
+    for (int i = 0; i < 8; ++i)
     {
         RigidBody body({500.0f, 100.0f + 60.0f * i}, 2.0f);
         body.LinearVelocity = {10.0f * i, 0.0f};
         body.SetSquare(40.0f);
         world.Add(body);
     } 
-
     RigidBody floor({500.0f, 970.0f});
-    floor.SetRectangle(1000.0f, 10.0f, false);
+    floor.SetRectangle(5000.0f, 10.0f, false);
+    world.Add(floor);
+}
+
+// shower
+void Demo3(World& world)
+{
+    for (int i = 0; i < 15; ++i)
+    {
+        RigidBody body({500.0f, 100.0f + 60.0f * i}, 2.0f);
+        body.LinearVelocity = {10.0f * i * pow(-1, i), 0.0f};
+        body.SetSquare(40.0f);
+        world.Add(body);
+    } 
+    for (int i = 0; i < 15; ++i)
+    {
+        RigidBody body({200.0f, 100.0f + 60.0f * i}, 2.0f);
+        body.LinearVelocity = {10.0f * i * pow(-1, i), 0.0f};
+        body.SetSquare(40.0f);
+        world.Add(body);
+    } 
+    for (int i = 0; i < 15; ++i)
+    {
+        RigidBody body({700.0f, 100.0f + 60.0f * i}, 2.0f);
+        body.LinearVelocity = {10.0f * i * pow(-1, i), 0.0f};
+        body.SetSquare(40.0f);
+        world.Add(body);
+    }
+    RigidBody floor({500.0f, 970.0f});
+    floor.SetRectangle(5000.0f, 10.0f, false);
     world.Add(floor);
 }
 
@@ -58,7 +87,7 @@ int main()
     World world({0.0f, 980.0f}, 10);
     Drawer drawer(window, world);
 
-    Demo2(world);
+    Demo1(world);
     while (window.isOpen())
     {
         sf::Time dt = Clock.restart();

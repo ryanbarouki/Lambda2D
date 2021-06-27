@@ -88,23 +88,26 @@ Interval Polygon::Project(Vec2 const& normedAxis) const
 EdgePair Polygon::FindBestEdge(Vec2 const& normal) const
 {
     float max = -std::numeric_limits<float>::max();
-    auto furthestV = Vertices.begin();
+    int furthestV = 0;
+    int numVertices = Vertices.size();
     // find the farthest vertex in the polygon along the separation normal
-    for (auto it = Vertices.begin(); it != Vertices.end(); ++it)
+    for (int i = 0; i < numVertices; ++i)
     {
-        float projection = normal.Dot(*it + Body.Position);
+        float projection = normal.Dot(Vertices[i] + Body.Position);
         if (projection > max)
         {
             max = projection;
-            furthestV = it;
+            furthestV = i;
         }
     }
-    // std::cout << "Body with mass, " << Body.Mass << " and position, (" << Body.Position.x << ", " << Body.Position.y << ")\n";
-    Vec2 v = *furthestV + Body.Position;
-    Vec2 v0 = furthestV == Vertices.begin() ? *(Vertices.end() - 1) : *(furthestV - 1); // previous vertex
-    v0 += Body.Position;
-    Vec2 v1 = furthestV == Vertices.end() - 1? *(Vertices.begin()) : *(furthestV + 1); // previous vertex
-    v1 += Body.Position;
+
+    Vec2 v = Vertices[furthestV] + Body.Position;
+    // previous vertex
+    int prevVert = furthestV == 0 ? numVertices - 1 : furthestV - 1;
+    Vec2 v0 = Vertices[prevVert] + Body.Position;
+    // next vertex
+    int nextVert = furthestV == numVertices - 1 ? 0 : furthestV + 1;
+    Vec2 v1 = Vertices[nextVert] + Body.Position;
 
     Vec2 l = (v - v1).Normalised();
     Vec2 r = (v - v0).Normalised();
@@ -112,11 +115,11 @@ EdgePair Polygon::FindBestEdge(Vec2 const& normal) const
     // retain the winding direction of the vertices v0 -> v -> v1
     if (r.Dot(normal) <= l.Dot(normal))
     {
-        return EdgePair{v0, v, v};
+        return {v0, v, v, prevVert};
     }
     else 
     {
-        return EdgePair{v, v1, v};
+        return {v, v1, v, nextVert};
     }
 }
 

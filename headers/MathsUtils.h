@@ -67,6 +67,7 @@ struct EdgePair
     Vec2 v1;
     Vec2 v2;
     Vec2 max;
+    int edgeNum;
 
     Vec2 GetEdgeVec();
 };
@@ -76,6 +77,7 @@ struct ContactPoint
     Vec2 point;
     Vec2 normal;
     float depth;
+    int edgeNum; // used to identify the edge for warm starting
     float massNormal;
     float massTangent;
     float bias = 0.0f;

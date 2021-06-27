@@ -41,7 +41,7 @@ Arbiter::Arbiter(std::shared_ptr<RigidBody> const& body1, std::shared_ptr<RigidB
 void Arbiter::PreStep(float invDt) 
 {
     const float allowedPenetration = 0.01f;
-    float biasFactor = 0.2f;
+    float biasFactor = World::positionCorrection ? 0.2f : 0.0f; // 0.2f
     for (auto& c : ContactManifold)
     {
         // vectors from centre of Body to contact point
@@ -65,7 +65,7 @@ void Arbiter::PreStep(float invDt)
         kTangent += Body1->InvI * (r1.Dot(r1) - rt1 * rt1) + Body2->InvI * (r2.Dot(r2) - rt2 * rt2);
         c.massTangent = 1.0f / kTangent;
         
-        c.bias = -biasFactor * invDt * std::min(0.0f, c.depth + allowedPenetration);
+        c.bias = -biasFactor * invDt * std::min(0.0f, -c.depth + allowedPenetration);
 
         // accumulateImpulses? will leave that for now too 
         if (World::accumulateImpulses)
@@ -154,4 +154,44 @@ void Arbiter::ApplyImpulse()
 bool Arbiter::InContact() const
 {
     return !ContactManifold.empty();
+}
+
+void Arbiter::UpdateContacts(std::vector<ContactPoint> const& newContacts)
+{
+    std::vector<ContactPoint> newManifold;
+    int numContacts = newContacts.size();
+    
+    for (int i = 0; i < numContacts; ++i)
+    {
+        auto cNew = newContacts[i];
+        int k = -1;
+        for (int j = 0; j < ContactManifold.size(); ++j)
+        {
+            auto cOld = ContactManifold[j];
+            if (cNew.edgeNum == cOld.edgeNum)
+            {
+                k = j;
+                break;
+            }
+        }
+
+        if (k > -1)
+        {
+            ContactPoint c = cNew;
+            ContactPoint cOld = ContactManifold[k];
+
+            // warm starting
+            c.Pn = cOld.Pn;
+            c.Pt = cOld.Pt;
+            c.Pnb = cOld.Pnb;
+
+            newManifold.push_back(c);
+        }
+        else
+        {
+            newManifold.push_back(newContacts[i]);
+        }
+    }
+
+    ContactManifold = newManifold;
 }

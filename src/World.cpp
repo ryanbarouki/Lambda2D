@@ -1,6 +1,10 @@
 #include "../headers/World.h"
 #include <iostream>
 
+bool World::accumulateImpulses = true;
+bool World::warmStarting = false;
+bool World::positionCorrection = true;
+
 void World::Add(RigidBody const& body)
 {
     auto bodyPtr = std::make_shared<RigidBody>(body);
@@ -84,9 +88,14 @@ void World::BroadPhase()
                 else
                 {
                     // update existing Arbiter pair
-                    // for now just do the same
-                    Arbiters[arbKey] = newArb;
-                    // Arbiters.insert(std::make_pair(arbKey, newArb));
+                    if (World::warmStarting)
+                    {
+                        it->second.UpdateContacts(newArb.GetContacts());
+                    }
+                    else
+                    {
+                        Arbiters[arbKey] = newArb;
+                    }
                 }
             }
             else
