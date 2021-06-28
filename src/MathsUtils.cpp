@@ -82,7 +82,7 @@ Vec2 Vec2::Perp() const
 Vec2 Vec2::Normalised() const
 {
     float length = Length();
-    return Vec2{x / length, y / length};
+    return length > 0 ? Vec2{x / length, y / length} : Vec2{0,0};
 }
 
 // points from v1 to v2;

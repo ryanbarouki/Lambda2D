@@ -3,6 +3,7 @@
 #include "IShape2.h"
 #include "Polygon.h"
 #include <memory>
+#include <iostream>
 
 class RigidBody
 {

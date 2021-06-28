@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.17)
-project(softbody)
+project(simpleengine)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(softbody 
-src/main.cpp 
+add_executable(SimpleEngine 
+main.cpp 
 src/World.cpp 
 src/Polygon.cpp 
 src/NarrowPhase.cpp 
@@ -23,7 +23,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 find_package(SFML REQUIRED system window graphics)
 if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
-    target_link_libraries(softbody ${SFML_LIBRARIES})
+    target_link_libraries(SimpleEngine ${SFML_LIBRARIES})
 endif()
 
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})

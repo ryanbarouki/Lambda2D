@@ -21,9 +21,13 @@ public:
     static bool accumulateImpulses;
     static bool warmStarting;
     static bool positionCorrection;
+    static bool goodBroadPhase;
 
 private:
+    // O(NlogN) Broad Phase
     void BroadPhase();
+    // O(N^2) Broad Phase
+    void BadBroadPhase();
 
     Vec2 Gravity;
     int Iterations;

@@ -1,24 +1,36 @@
 #include "../headers/World.h"
 #include <iostream>
 
+// feature flags
 bool World::accumulateImpulses = true;
-bool World::warmStarting = false;
+bool World::warmStarting = true;
 bool World::positionCorrection = true;
+bool World::goodBroadPhase = true;
 
 void World::Add(RigidBody const& body)
 {
     auto bodyPtr = std::make_shared<RigidBody>(body);
     Bodies.push_back(bodyPtr);
-    int bodyIndex = CollisionTree.Insert(bodyPtr);
-    BodyIndices.insert({bodyPtr, bodyIndex});
-}
-
+    if (World::goodBroadPhase)
+    {
+        int bodyIndex = CollisionTree.Insert(bodyPtr);
+        BodyIndices.insert({bodyPtr, bodyIndex});
+    }
+} 
+    
 void World::Step(float dt)
 {
     float invDt = dt > 0.0f ? 1.0f / dt : 0.0f;
 
     // Do the broadphase here
-    BroadPhase();
+    if (World::goodBroadPhase)
+    {
+        BroadPhase();
+    }
+    else
+    {
+        BadBroadPhase();
+    }
 
     // Integrate forces - do we need this at first?
     for (auto& body : Bodies)
@@ -101,6 +113,53 @@ void World::BroadPhase()
             else
             {
                 // not in contact so remove from Arbiters
+                Arbiters.erase(arbKey);
+            }
+        }
+    }
+}
+
+void World::BadBroadPhase()
+{
+    for (auto const& bodyI : Bodies)
+    {
+        for (auto const& bodyJ : Bodies)
+        {
+            if (bodyI->InvMass == 0.0f && bodyJ->InvMass == 0.0f)
+                continue;
+
+            Arbiter newArb(bodyI, bodyJ);
+            ArbiterKey arbKey(bodyI, bodyJ);
+
+            if (newArb.InContact())
+            {
+                auto it = Arbiters.find(arbKey);
+                if (it == Arbiters.end())
+                {
+                    Arbiters.insert({arbKey, newArb});
+                }
+                else
+                {
+                    // update existing Arbiter pair
+                    if (World::warmStarting)
+                    {
+                        it->second.UpdateContacts(newArb.GetContacts());
+                    }
+                    else
+                    {
+                        Arbiters[arbKey] = newArb;
+                    }
+                }
+            }
+            else
+            {
+                static int count = 1;
+                if (count % 10000 == 0)
+                {
+                    // std::cout << "Break\n";
+                }
+                count++;
+
                 Arbiters.erase(arbKey);
             }
         }

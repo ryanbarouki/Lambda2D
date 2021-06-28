@@ -35,8 +35,13 @@ Aabb(body.Aabb)
 AABB RigidBody::GetAABB() 
 {
     // only works for polgons: need to figure this out for general shapes
-    auto& polygon = dynamic_cast<Polygon&>(*Shape);
-    auto vertices = polygon.GetVertices();
+    auto polygon = dynamic_cast<Polygon*>(Shape.get());
+    if (!polygon)
+    {
+        std::cout << "polygon is null in GetAABB()\n";
+        return {};
+    }
+    auto vertices = polygon->GetVertices();
     float x_min = std::numeric_limits<float>::max();
     float y_min = std::numeric_limits<float>::max();
     float x_max = std::numeric_limits<float>::min();
