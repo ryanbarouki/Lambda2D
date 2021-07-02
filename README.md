@@ -1,6 +1,7 @@
 # 2D Rigid Body Physics (Possibly Soft Body in the future)
 ## Bugs
-- Objects appear to be sliding when they should be stationary - seems like dodgy contact points
+- Mild stability issues still
+- ~~Objects appear to be sliding when they should be stationary - seems like dodgy contact points~~
 - ~~Sometimes objects disappear~~
 - ~~Broad Phase bug with too many objects~~
 

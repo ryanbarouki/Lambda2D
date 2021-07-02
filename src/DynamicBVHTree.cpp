@@ -223,6 +223,7 @@ void DynamicBVHTree::RemoveLeaf(int leafNodeIndex)
 
 void DynamicBVHTree::UpdateLeaf(int leafNodeIndex, AABB const& newAABB, Vec2 const& displacement)
 {
+	assert(leafNodeIndex != -1);
 	// if the current AABB contains the new AABB then do nothing
 	if (Nodes[leafNodeIndex].FatAABB.Contains(newAABB))
 		return;
@@ -274,7 +275,7 @@ int DynamicBVHTree::Insert(std::shared_ptr<RigidBody> const& object)
 	return nodeIndex;
 }
 
-std::vector<int> DynamicBVHTree::Query(int queryIndex) const
+std::vector<int> DynamicBVHTree::Query(int queryIndex, std::map<ArbiterKey, Arbiter>& arbiters) const
 {
 	std::vector<int> overlaps;
 	std::stack<int> stack;
@@ -306,6 +307,15 @@ std::vector<int> DynamicBVHTree::Query(int queryIndex) const
 			{
 				stack.push(currNode.LeftChild);
 				stack.push(currNode.RightChild);
+			}
+		}
+		else
+		{
+			// no longer intersects so remove from Arbiters if found
+			ArbiterKey arbKey(currNode.Object, Nodes[queryIndex].Object);
+			if (arbiters.find(arbKey) != arbiters.end())
+			{
+				arbiters.erase(arbKey);
 			}
 		}
 	}

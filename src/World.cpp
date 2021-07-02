@@ -78,11 +78,9 @@ void World::BroadPhase()
             continue;
         }
 
-        auto const& fatAABB = CollisionTree.GetFatAABB(bodyIndex);
-
         // TODO: Make sure this is the best place for it   
         CollisionTree.UpdateLeaf(bodyIndex, body->GetAABB(), {0,0});
-        auto overlaps = CollisionTree.Query(bodyIndex); // can this be done more efficiently?
+        auto overlaps = CollisionTree.Query(bodyIndex, Arbiters); // can this be done more efficiently?
 
         for (auto const& overlap : overlaps)
         {
@@ -112,7 +110,7 @@ void World::BroadPhase()
             }
             else
             {
-                // not in contact so remove from Arbiters
+                // not in contact (Narrow Phase) so remove from Arbiters
                 Arbiters.erase(arbKey);
             }
         }

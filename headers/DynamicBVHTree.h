@@ -2,8 +2,10 @@
 #include <vector>
 #include <variant>
 #include <memory>
+#include <map>
 #include "IShape2.h"
 #include "RigidBody.h"
+#include "Arbiter.h"
 #include "AABB.h"
 
 constexpr int nullNode = -1;
@@ -49,5 +51,5 @@ public:
     void RemoveLeaf(int leafNodeIndex);
     void UpdateLeaf(int leafNodeIndex, AABB const& newAABB, Vec2 const& displacement);
     int Insert(std::shared_ptr<RigidBody> const& object);
-    std::vector<int> Query(int leafNodeIndex) const;
+    std::vector<int> Query(int queryIndex, std::map<ArbiterKey, Arbiter>& arbiters) const;
 };

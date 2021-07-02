@@ -33,10 +33,10 @@ void Demo1(World& world)
 // stack
 void Demo2(World& world)
 {
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < 15; ++i)
     {
-        RigidBody body({500.0f, 100.0f + 60.0f * i}, 2.0f);
-        body.LinearVelocity = {10.0f * i, 0.0f};
+        RigidBody body({500.0f, 50.0f * i}, 2.0f);
+        body.LinearVelocity = {3.0f * i, 0.0f};
         body.SetSquare(40.0f);
         world.Add(body);
     } 
@@ -48,31 +48,55 @@ void Demo2(World& world)
 // shower
 void Demo3(World& world)
 {
-    int numInStack = 15;
+    int numInStack = 40;
     for (int i = 0; i < numInStack; ++i)
     {
-        RigidBody body({500.0f, 60.0f * i}, 2.0f);
-        body.LinearVelocity = {10.0f * i * pow(-1, i), 100.0f};
-        body.SetSquare(40.0f);
+        RigidBody body({500.0f, 25.0f * i}, 2.0f);
+        body.LinearVelocity = {10.0f * i * powf(-1, i), 100.0f};
+        body.SetSquare(20.0f);
         world.Add(body);
     } 
     for (int i = 0; i < numInStack; ++i)
     {
-        RigidBody body({200.0f, 60.0f * i}, 2.0f);
-        body.LinearVelocity = {10.0f * i * pow(-1, i), -80.0f};
-        body.SetSquare(40.0f);
+        RigidBody body({200.0f, 25.0f * i}, 2.0f);
+        body.LinearVelocity = {10.0f * i * powf(-1, i), -80.0f};
+        body.SetSquare(20.0f);
         world.Add(body);
     } 
     for (int i = 0; i < numInStack; ++i)
     {
-        RigidBody body({700.0f, 60.0f * i}, 2.0f);
-        body.LinearVelocity = {10.0f * i * pow(-1, i), -60.0f};
-        body.SetSquare(40.0f);
+        RigidBody body({700.0f, 25.0f * i}, 2.0f);
+        body.LinearVelocity = {10.0f * i * powf(-1, i), -60.0f};
+        body.SetSquare(20.0f);
         world.Add(body);
     }
     // Note that static objects can't overlap or they will break
-    RigidBody floor({500.0f, 800.0f});
-    floor.SetRectangle(800.0f, 10.0f, false);
+    RigidBody floor({500.0f, 900.0f});
+    floor.SetRectangle(850.0f, 10.0f, false);
+    RigidBody leftWall({0.0f, 500.0f});
+    leftWall.SetRectangle(100.0f, 1000.0f, false);
+    RigidBody rightWall({1000.0f, 500.0f});
+    rightWall.SetRectangle(100.0f, 1000.0f, false);
+    world.Add(floor);
+    world.Add(leftWall);
+    world.Add(rightWall);
+}
+
+void Demo4(World& world)
+{
+    int numBlocks = 300;
+    int numPerRow = 30;
+    float y = 0.0f;
+    for (int i = 0; i < numBlocks; ++i)
+    {
+        y = (i % numPerRow) == 0 ? y + 25.0f : y;
+        RigidBody body({25.0f * (i % numPerRow) + 110.0f, y}, 2.0f);
+        // body.LinearVelocity = {-300.0f * powf(-1, i), 200.0f};
+        body.SetSquare(20.0f);
+        world.Add(body);
+    }
+    RigidBody floor({500.0f, 900.0f});
+    floor.SetRectangle(850.0f, 10.0f, false);
     RigidBody leftWall({0.0f, 500.0f});
     leftWall.SetRectangle(100.0f, 1000.0f, false);
     RigidBody rightWall({1000.0f, 500.0f});
