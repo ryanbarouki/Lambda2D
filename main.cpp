@@ -111,7 +111,7 @@ constexpr bool CONST_FRAME_RATE = true;
 int main() 
 {
     sf::Clock Clock;
-    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Rigid Body Physics");
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Lambda2D");
 
     if (CONST_FRAME_RATE)
         window.setFramerateLimit(FRAME_RATE);

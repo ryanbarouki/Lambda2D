@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.17)
-project(simpleengine)
+project(Lambda2D)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(SimpleEngine 
+add_executable(Lambda2D 
 main.cpp 
 src/World.cpp 
 src/Polygon.cpp 
@@ -23,7 +23,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 find_package(SFML REQUIRED system window graphics)
 if (SFML_FOUND)
     include_directories(${SFML_INCLUDE_DIR})
-    target_link_libraries(SimpleEngine ${SFML_LIBRARIES})
+    target_link_libraries(Lambda2D ${SFML_LIBRARIES})
 endif()
 
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
