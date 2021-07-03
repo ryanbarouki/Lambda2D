@@ -1,5 +1,5 @@
 # Lambda2D - Rigid Body Physics (Possibly Soft Body in the future)
-![Lambda2D_logo@0 5x](https://user-images.githubusercontent.com/45016299/124347219-5d071c80-dbdb-11eb-88b6-17e3deb8434a.png)
+![Lambda2D_logo@0 5x](https://user-images.githubusercontent.com/45016299/124357647-98720d00-dc14-11eb-8323-67c47293f208.png)
 ## Bugs
 - Mild stability issues still
 - ~~Objects appear to be sliding when they should be stationary - seems like dodgy contact points~~
