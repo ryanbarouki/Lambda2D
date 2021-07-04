@@ -65,6 +65,11 @@ void World::Step(float dt)
         body->Rotate(dt * body->AngularVelocity);
         body->Force = {0.0f,0.0f};
         body->Torque = 0.0f;
+
+        int bodyIndex = BodyIndices[body];
+        if (bodyIndex == nullNode)
+            continue;
+        CollisionTree.UpdateLeaf(bodyIndex, body->GetAABB(), dt * body->LinearVelocity);
     }
 }
 
@@ -78,8 +83,6 @@ void World::BroadPhase()
             continue;
         }
 
-        // TODO: Make sure this is the best place for it   
-        CollisionTree.UpdateLeaf(bodyIndex, body->GetAABB(), {0,0});
         auto overlaps = CollisionTree.Query(bodyIndex, Arbiters); // can this be done more efficiently?
 
         for (auto const& overlap : overlaps)

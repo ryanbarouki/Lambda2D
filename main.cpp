@@ -119,7 +119,7 @@ int main()
     World world({0.0f, 981.0f}, 10);
     Drawer drawer(window, world);
 
-    Demo3(world);
+    Demo4(world);
     while (window.isOpen())
     {
         sf::Time dt = Clock.restart();

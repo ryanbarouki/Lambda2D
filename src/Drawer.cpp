@@ -11,7 +11,7 @@ void Drawer::DrawWorld()
     {
         DrawBody(body);
     }
-    DrawContacts(World.GetArbiters());
+    // DrawContacts(World.GetArbiters());
 }
 
 void Drawer::DrawBody(std::shared_ptr<RigidBody> const& body)
